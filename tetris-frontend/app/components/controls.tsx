@@ -1,19 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Color, GridCell, Piece } from "../interfaces/interfaces";
-import { moveLeft, moveRight, drawPiece, findLandingPosition, moveDown } from "../context/gamecontext";
+import { moveLeft, moveRight, drawPiece, moveDown, generateRandomPiece } from "../context/gamecontext";
 import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
 import { PieceType } from "../interfaces/interfaces";
 import { Position } from "../interfaces/interfaces";
+import { SPAWN_POSITION } from "../consts/consts";
 
 interface ControlsProps {
   grid: GridCell[][];
   setGrid: (grid: GridCell[][]) => void;
   piece: Piece;
+  setPiece: (piece: Piece) => void;
   position: Position;
   setPosition: (position: Position) => void;
 }
 
-export function Controls({ grid, setGrid, piece, position, setPosition }: ControlsProps) {
+export function Controls({ grid, setGrid, piece, setPiece, position, setPosition }: ControlsProps) {
   const handleMoveLeft = () => {
     const { grid: newGrid, position: newPosition } = moveLeft(grid, piece, position);
     setGrid(newGrid);
@@ -27,13 +29,27 @@ export function Controls({ grid, setGrid, piece, position, setPosition }: Contro
   };
 
   const handleMoveDown = () => {
-    const { grid: newGrid, position: newPosition } = moveDown(grid, piece, position);
+    const { grid: newGrid, position: newPosition, placed } = moveDown(grid, piece, position);
     setGrid(newGrid);
-    setPosition(newPosition);
+
+    if (placed) {
+      const newPiece = generateRandomPiece();
+      const spawnPosition = SPAWN_POSITION;
+      const gridWithNewPiece = drawPiece(newGrid, newPiece, spawnPosition);
+      setPiece(newPiece);
+      setPosition(spawnPosition);
+      setGrid(gridWithNewPiece);
+    } else {
+      setPosition(newPosition);
+    }
   }
 
   const handleDraw = () => {
-    const newGrid = drawPiece(grid, piece);
+    const newPiece = generateRandomPiece();
+    const newPosition = SPAWN_POSITION;
+    const newGrid = drawPiece(grid, newPiece, newPosition);
+    setPiece(newPiece);
+    setPosition(newPosition);
     setGrid(newGrid);
   };
 

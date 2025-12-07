@@ -1,6 +1,6 @@
 import { SPAWN_POSITION } from "../consts/consts";
 import { PIECE_SHAPES } from "../consts/piececonsts";
-import { Color, GridCell, Piece, Position } from "../interfaces/interfaces";
+import { Color, GridCell, Piece, PieceType, Position } from "../interfaces/interfaces";
 
 export function makeGrid(): GridCell[][] {
   const cols = 10;
@@ -17,9 +17,20 @@ export function makeGrid(): GridCell[][] {
   return grid;
 }
 
+export function generateRandomPiece(): Piece {
+  const pieceTypes: PieceType[] = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'];
+  const randomPiece = pieceTypes[Math.floor(Math.random() * pieceTypes.length)];
+  const piece: Piece = {
+    type: randomPiece,
+    rotation: 0,
+    color: Color[randomPiece]
+  };
 
-export function drawPiece(grid: GridCell[][], piece: Piece) {
-  const position = SPAWN_POSITION;
+  return piece;
+}
+
+
+export function drawPiece(grid: GridCell[][], piece: Piece, position: Position) {
   const newGrid = grid.map(row => [...row]);
   const shape = PIECE_SHAPES[piece.type][piece.rotation];
 
@@ -150,7 +161,7 @@ function canMoveDown(grid: GridCell[][], piece: Piece, position: Position): bool
 export function moveDown(grid: GridCell[][], piece: Piece, position: Position) {
   if (!canMoveDown(grid, piece, position)) {
     const newGrid = place(grid, piece, position);
-    return { grid: newGrid, position }
+    return { grid: newGrid, position, placed: true }
   }
   const newGrid = grid.map(row => [...row]);
   const shape = PIECE_SHAPES[piece.type][piece.rotation];
@@ -172,7 +183,7 @@ export function moveDown(grid: GridCell[][], piece: Piece, position: Position) {
     newGrid[actualRow][actualCol].color = piece.color;
   }
 
-  return { grid: newGrid, position: newPosition }
+  return { grid: newGrid, position: newPosition, placed: false }
 }
 
 function place(grid: GridCell[][], piece: Piece, position: Position) {

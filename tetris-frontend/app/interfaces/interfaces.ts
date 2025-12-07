@@ -23,7 +23,6 @@ type Rotation = 0 | 1 | 2 | 3;
 export interface Piece {
   type: PieceType;
   rotation: Rotation;
-  cells: Position[];
   color: Color;
 }
 
