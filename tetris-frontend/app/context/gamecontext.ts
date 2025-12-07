@@ -38,17 +38,6 @@ export function drawPiece(grid: GridCell[][], piece: Piece) {
   return newGrid;
 }
 
-function getCurrentPosition(grid: GridCell[][]) {
-  let position: Position = { row: -1, col: -1 };
-  grid.forEach((row, y) => {
-    row.forEach((cell, x) => {
-      if (cell.currentPiece) {
-        position = { row: y, col: x };
-      }
-    });
-  });
-  return position;
-}
 
 export function moveRight(grid: GridCell[][], piece: Piece, position: Position) {
   const newGrid = grid.map(row => [...row]);
@@ -104,8 +93,6 @@ export function moveLeft(grid: GridCell[][], piece: Piece, position: Position) {
   for (const offset of shape) {
     const actualRow = newPosition.row + offset.row;
     const actualCol = newPosition.col + offset.col;
-    console.log(`Actual Row: ${actualRow}`)
-    console.log(`Actual Col: ${actualCol}`)
 
     // Out of bounds
     if (actualCol < 0) {
@@ -141,3 +128,64 @@ export function moveLeft(grid: GridCell[][], piece: Piece, position: Position) {
 
   return { grid: newGrid, position: newPosition };
 }
+
+function canMoveDown(grid: GridCell[][], piece: Piece, position: Position): boolean {
+  const shape = PIECE_SHAPES[piece.type][piece.rotation];
+  const newPosition = { ...position, row: position.row + 1 };
+  for (const offset of shape) {
+    const actualRow = newPosition.row + offset.row;
+    const actualCol = newPosition.col + offset.col;
+
+    if (actualRow >= grid.length) {
+      return false;
+    }
+
+    if (grid[actualRow][actualCol].occupied && !grid[actualRow][actualCol].currentPiece) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function moveDown(grid: GridCell[][], piece: Piece, position: Position) {
+  if (!canMoveDown(grid, piece, position)) {
+    const newGrid = place(grid, piece, position);
+    return { grid: newGrid, position }
+  }
+  const newGrid = grid.map(row => [...row]);
+  const shape = PIECE_SHAPES[piece.type][piece.rotation];
+  const newPosition = { ...position, row: position.row + 1 };
+
+  for (const offset of shape) {
+    const actualRow = position.row + offset.row;
+    const actualCol = position.col + offset.col;
+    newGrid[actualRow][actualCol].currentPiece = false;
+    newGrid[actualRow][actualCol].occupied = false;
+    newGrid[actualRow][actualCol].color = Color.Black;
+  }
+
+  for (const offset of shape) {
+    const actualRow = newPosition.row + offset.row;
+    const actualCol = newPosition.col + offset.col;
+    newGrid[actualRow][actualCol].currentPiece = true;
+    newGrid[actualRow][actualCol].occupied = true;
+    newGrid[actualRow][actualCol].color = piece.color;
+  }
+
+  return { grid: newGrid, position: newPosition }
+}
+
+function place(grid: GridCell[][], piece: Piece, position: Position) {
+  const newGrid = grid.map(row => [...row]);
+  const shape = PIECE_SHAPES[piece.type][piece.rotation];
+
+  for (const offset of shape) {
+    const actualRow = position.row + offset.row;
+    const actualCol = position.col + offset.col;
+    newGrid[actualRow][actualCol].currentPiece = false;
+    newGrid[actualRow][actualCol].occupied = true;
+    newGrid[actualRow][actualCol].color = piece.color;
+  }
+  return newGrid
+}
+

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Color, GridCell, Piece } from "../interfaces/interfaces";
-import { moveLeft, moveRight, drawPiece } from "../context/gamecontext";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { moveLeft, moveRight, drawPiece, findLandingPosition, moveDown } from "../context/gamecontext";
+import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
 import { PieceType } from "../interfaces/interfaces";
 import { Position } from "../interfaces/interfaces";
 
@@ -26,6 +26,12 @@ export function Controls({ grid, setGrid, piece, position, setPosition }: Contro
     setPosition(newPosition);
   };
 
+  const handleMoveDown = () => {
+    const { grid: newGrid, position: newPosition } = moveDown(grid, piece, position);
+    setGrid(newGrid);
+    setPosition(newPosition);
+  }
+
   const handleDraw = () => {
     const newGrid = drawPiece(grid, piece);
     setGrid(newGrid);
@@ -36,6 +42,7 @@ export function Controls({ grid, setGrid, piece, position, setPosition }: Contro
       <Button onClick={handleMoveLeft}><ArrowLeft /></Button>
       <Button className="align-middle" onClick={handleDraw}>draw</Button>
       <Button onClick={handleMoveRight}><ArrowRight /></Button>
+      <Button onClick={handleMoveDown}><ArrowDown /></Button>
     </div>
   );
 }
