@@ -18,7 +18,7 @@ export enum Color {
 }
 
 export type PieceType = 'I' | 'O' | 'T' | 'S' | 'Z' | 'J' | 'L';
-type Rotation = 0 | 1 | 2 | 3;
+export type Rotation = 0 | 1 | 2 | 3;
 
 export interface Piece {
   type: PieceType;

@@ -1,6 +1,7 @@
+import { watch } from "fs/promises";
 import { SPAWN_POSITION } from "../consts/consts";
 import { PIECE_SHAPES } from "../consts/piececonsts";
-import { Color, GridCell, Piece, PieceType, Position } from "../interfaces/interfaces";
+import { Color, GridCell, Piece, PieceType, Position, Rotation } from "../interfaces/interfaces";
 
 export function makeGrid(): GridCell[][] {
   const cols = 10;
@@ -139,6 +140,28 @@ export function moveLeft(grid: GridCell[][], piece: Piece, position: Position) {
   return { grid: newGrid, position: newPosition };
 }
 
+export function rotateRight(grid: GridCell[][], piece: Piece, position: Position) {
+  const newRotation = (piece.rotation + 1) % 4 as Rotation;
+  const newShape = PIECE_SHAPES[piece.type][newRotation];
+  for (const offset of newShape) {
+    const actualRow = position.row + offset.row;
+    const actualCol = position.col + offset.col;
+
+    if (actualRow < 0 || actualRow >= grid.length || actualCol < 0 || actualCol >= grid[0].length) {
+      return { grid, piece, position };
+    }
+
+    if (grid[actualRow][actualCol].occupied && !grid[actualRow][actualCol].currentPiece) {
+      return { grid, piece, position };
+    }
+  }
+
+  const newPiece = { ...piece, rotation: newRotation };
+  const clearedGrid = clearPiece(grid, piece, position);
+  const newGrid = drawPiece(clearedGrid, newPiece, position);
+  return { grid: newGrid, piece: newPiece, position }
+}
+
 function canMoveDown(grid: GridCell[][], piece: Piece, position: Position): boolean {
   const shape = PIECE_SHAPES[piece.type][piece.rotation];
   const newPosition = { ...position, row: position.row + 1 };
@@ -159,30 +182,14 @@ function canMoveDown(grid: GridCell[][], piece: Piece, position: Position): bool
 
 export function moveDown(grid: GridCell[][], piece: Piece, position: Position) {
   if (!canMoveDown(grid, piece, position)) {
-    const newGrid = place(grid, piece, position);
-    return { grid: newGrid, position, placed: true }
+    const { grid: newGrid, linesCleared } = place(grid, piece, position);
+    return { grid: newGrid, position, placed: true, linesCleared }
   }
-  const newGrid = grid.map(row => [...row]);
-  const shape = PIECE_SHAPES[piece.type][piece.rotation];
   const newPosition = { ...position, row: position.row + 1 };
+  const clearedGrid = clearPiece(grid, piece, position);
+  const newGrid = drawPiece(clearedGrid, piece, newPosition);
 
-  for (const offset of shape) {
-    const actualRow = position.row + offset.row;
-    const actualCol = position.col + offset.col;
-    newGrid[actualRow][actualCol].currentPiece = false;
-    newGrid[actualRow][actualCol].occupied = false;
-    newGrid[actualRow][actualCol].color = Color.Black;
-  }
-
-  for (const offset of shape) {
-    const actualRow = newPosition.row + offset.row;
-    const actualCol = newPosition.col + offset.col;
-    newGrid[actualRow][actualCol].currentPiece = true;
-    newGrid[actualRow][actualCol].occupied = true;
-    newGrid[actualRow][actualCol].color = piece.color;
-  }
-
-  return { grid: newGrid, position: newPosition, placed: false }
+  return { grid: newGrid, position: newPosition, placed: false, linesCleared: 0 }
 }
 
 function place(grid: GridCell[][], piece: Piece, position: Position) {
@@ -196,7 +203,8 @@ function place(grid: GridCell[][], piece: Piece, position: Position) {
     newGrid[actualRow][actualCol].occupied = true;
     newGrid[actualRow][actualCol].color = piece.color;
   }
-  return newGrid
+  const { grid: clearedGrid, linesCleared } = clearLines(newGrid);
+  return { grid: clearedGrid, linesCleared }
 }
 
 function findLandingPosition(grid: GridCell[][], piece: Piece, position: Position) {
@@ -213,9 +221,24 @@ function findLandingPosition(grid: GridCell[][], piece: Piece, position: Positio
 export function hardDrop(grid: GridCell[][], piece: Piece, position: Position) {
   const landingPosition = findLandingPosition(grid, piece, position);
 
-  const newGrid = clearPiece(grid, piece, position);
+  const clearedGrid = clearPiece(grid, piece, position);
 
-  const finalGrid = place(newGrid, piece, landingPosition);
+  const { grid: newGrid, linesCleared } = place(clearedGrid, piece, landingPosition);
 
-  return { grid: finalGrid, position: landingPosition, placed: true }
+  return { grid: newGrid, position: landingPosition, placed: true, linesCleared }
+}
+
+
+export function clearLines(grid: GridCell[][]) {
+  const newGrid = grid.filter(row => !row.every(cell => cell.occupied));
+  const linesCleared = grid.length - newGrid.length;
+  while (newGrid.length < 20) {
+    const emptyRow: GridCell[] = [];
+    for (let j = 0; j < 10; j++) {
+      emptyRow.push({ occupied: false, currentPiece: false });
+    }
+    newGrid.unshift(emptyRow);
+  }
+
+  return { grid: newGrid, linesCleared };
 }

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Color, GridCell, Piece } from "../interfaces/interfaces";
-import { moveLeft, moveRight, drawPiece, moveDown, generateRandomPiece, hardDrop } from "../context/gamecontext";
+import { moveLeft, moveRight, drawPiece, moveDown, generateRandomPiece, hardDrop, rotateRight } from "../context/gamecontext";
 import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
 import { PieceType } from "../interfaces/interfaces";
 import { Position } from "../interfaces/interfaces";
@@ -44,6 +44,13 @@ export function Controls({ grid, setGrid, piece, setPiece, position, setPosition
     }
   }
 
+  const handleRotate = () => {
+    const { grid: newGrid, piece: newPiece, position: newPosition } = rotateRight(grid, piece, position);
+    setGrid(newGrid);
+    setPiece(newPiece);
+    setPosition(newPosition);
+  }
+
   const handleDrop = () => {
     const { grid: newGrid, position: newPosition, placed } = hardDrop(grid, piece, position);
     handleDraw(newGrid);
@@ -60,11 +67,13 @@ export function Controls({ grid, setGrid, piece, setPiece, position, setPosition
 
   return (
     <div className="flex flex-row justify-center gap-1">
+      <Button variant="destructive" onClick={() => handleDraw(grid)}>Start</Button>
       <Button onClick={handleMoveLeft}><ArrowLeft /></Button>
-      <Button className="align-middle" onClick={() => handleDraw()}>draw</Button>
       <Button onClick={handleMoveRight}><ArrowRight /></Button>
       <Button onClick={handleMoveDown}><ArrowDown /></Button>
       <Button onClick={handleDrop}>Drop</Button>
+      <Button onClick={handleRotate}>Rotate</Button>
+
 
     </div>
   );
