@@ -1,8 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { makeGrid, testDraw } from "../context/gamecontext";
+import { useEffect, useRef } from "react";
+import { GridCell } from "../interfaces/interfaces";
 
-export default function Grid() {
-  const [grid, setGrid] = useState(makeGrid());
+interface GridProps {
+  grid: GridCell[][];
+  setGrid: (grid: GridCell[][]) => void;
+}
+export default function Grid({ grid, setGrid }: GridProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -52,7 +55,6 @@ export default function Grid() {
   return (
     <>
       <canvas ref={canvasRef} />
-      <button onClick={() => setGrid(testDraw(grid))}>draw</button>
     </>
   );
 }
