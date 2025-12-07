@@ -1,18 +1,42 @@
-
-enum GameState {
+export enum GameState {
   Menu,
   Running,
   Paused,
   Over,
 }
 
-export interface GridCell {
-  occuppied: boolean;
-  color?: string;
+export enum Color {
+  Black = "#000000",
+  White = "#FFFFFF",
+  I = "#00FFFF",    // I
+  O = "#FFFF00",  // O
+  T = "#800080",  // T
+  S = "#008000",   // S
+  Z = "#FF0000",     // Z
+  J = "#0000FF",    // J
+  L = "#FFA500",  // L
 }
 
-export interface Game {
+export type PieceType = 'I' | 'O' | 'T' | 'S' | 'Z' | 'J' | 'L';
+type Rotation = 0 | 1 | 2 | 3;
+
+export interface Piece {
+  type: PieceType;
+  rotation: Rotation;
+  cells: Position[];
+  color: Color;
+}
+
+export interface GridCell {
+  occupied: boolean;
+  currentPiece: boolean;
+  color?: Color;
+}
+
+export interface GameObject {
   state: GameState,
   timeElapsed: number,
-  grid: number[][],
+  grid: GridCell[][],
 }
+
+export type Position = { row: number, col: number }; 

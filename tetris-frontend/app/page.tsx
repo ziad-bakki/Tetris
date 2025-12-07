@@ -7,7 +7,7 @@ export default function Home() {
       <div className="text-2xl text-center p-5">
         Tetris Game
       </div>
-      <div className="flex justify-center align-middle">
+      <div className="flex justify-center align-middle flex-row">
         <Game />
       </div>
 
