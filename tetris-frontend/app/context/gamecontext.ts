@@ -16,3 +16,9 @@ export function makeGrid(): GridCell[][] {
 }
 
 
+
+export function testDraw(grid: GridCell[][]) {
+  const newGrid = grid.map(row => [...row]);
+  newGrid[10][5].color = '#FFFFFF';
+  return newGrid;
+}

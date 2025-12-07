@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { makeGrid } from "../context/gamecontext";
+import { makeGrid, testDraw } from "../context/gamecontext";
 
 export default function Grid() {
   const [grid, setGrid] = useState(makeGrid());
@@ -50,6 +50,9 @@ export default function Grid() {
   }, [grid])
 
   return (
-    <canvas ref={canvasRef} />
+    <>
+      <canvas ref={canvasRef} />
+      <button onClick={() => setGrid(testDraw(grid))}>draw</button>
+    </>
   );
 }
