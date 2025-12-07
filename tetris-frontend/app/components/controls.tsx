@@ -30,12 +30,7 @@ export function Controls({ grid, setGrid, piece, position, setPosition }: Contro
     const newGrid = drawPiece(grid, piece);
     setGrid(newGrid);
   };
-  const newPiece: Piece = {
-    type: 'T',
-    rotation: 0,
-    cells: [],
-    color: Color.Purple,
-  };
+
   return (
     <div className="flex flex-row justify-center gap-1">
       <Button onClick={handleMoveLeft}><ArrowLeft /></Button>
