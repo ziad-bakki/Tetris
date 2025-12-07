@@ -29,6 +29,23 @@ export function generateRandomPiece(): Piece {
   return piece;
 }
 
+function clearPiece(grid: GridCell[][], piece: Piece, position: Position) {
+  const newGrid = grid.map(row => [...row]);
+  const shape = PIECE_SHAPES[piece.type][piece.rotation];
+
+  for (const offset of shape) {
+    const actualRow = position.row + offset.row;
+    const actualCol = position.col + offset.col;
+    if (actualRow >= 0 && actualCol >= 0) {
+      newGrid[actualRow][actualCol].currentPiece = false;
+      newGrid[actualRow][actualCol].occupied = false;
+      newGrid[actualRow][actualCol].color = Color.Black;
+    }
+  }
+
+  return newGrid;
+}
+
 
 export function drawPiece(grid: GridCell[][], piece: Piece, position: Position) {
   const newGrid = grid.map(row => [...row]);
@@ -51,7 +68,6 @@ export function drawPiece(grid: GridCell[][], piece: Piece, position: Position) 
 
 
 export function moveRight(grid: GridCell[][], piece: Piece, position: Position) {
-  const newGrid = grid.map(row => [...row]);
   const shape = PIECE_SHAPES[piece.type][piece.rotation];
   const newPosition = { ...position, col: position.col + 1 };
 
@@ -72,15 +88,7 @@ export function moveRight(grid: GridCell[][], piece: Piece, position: Position) 
   }
 
   // Clear old piece
-  for (const offset of shape) {
-    const actualRow = position.row + offset.row;
-    const actualCol = position.col + offset.col;
-    if (actualRow >= 0 && actualCol >= 0) {
-      newGrid[actualRow][actualCol].currentPiece = false;
-      newGrid[actualRow][actualCol].occupied = false;
-      newGrid[actualRow][actualCol].color = Color.Black;
-    }
-  }
+  const newGrid = clearPiece(grid, piece, position);
 
   // Draw piece at new position
   for (const offset of shape) {
@@ -96,7 +104,6 @@ export function moveRight(grid: GridCell[][], piece: Piece, position: Position) 
 
 
 export function moveLeft(grid: GridCell[][], piece: Piece, position: Position) {
-  const newGrid = grid.map(row => [...row]);
   const shape = PIECE_SHAPES[piece.type][piece.rotation];
   const newPosition = { ...position, col: position.col - 1 };
 
@@ -118,15 +125,7 @@ export function moveLeft(grid: GridCell[][], piece: Piece, position: Position) {
   }
 
   // Clear old piece
-  for (const offset of shape) {
-    const actualRow = position.row + offset.row;
-    const actualCol = position.col + offset.col;
-    if (actualRow >= 0 && actualCol >= 0) {
-      newGrid[actualRow][actualCol].currentPiece = false;
-      newGrid[actualRow][actualCol].occupied = false;
-      newGrid[actualRow][actualCol].color = Color.Black;
-    }
-  }
+  const newGrid = clearPiece(grid, piece, position);
 
   // Draw piece at new position
   for (const offset of shape) {
@@ -200,3 +199,23 @@ function place(grid: GridCell[][], piece: Piece, position: Position) {
   return newGrid
 }
 
+function findLandingPosition(grid: GridCell[][], piece: Piece, position: Position) {
+  let landingPosition = { ...position };
+
+  while (canMoveDown(grid, piece, landingPosition)) {
+    landingPosition = { ...landingPosition, row: landingPosition.row + 1 };
+  }
+
+  return landingPosition;
+
+}
+
+export function hardDrop(grid: GridCell[][], piece: Piece, position: Position) {
+  const landingPosition = findLandingPosition(grid, piece, position);
+
+  const newGrid = clearPiece(grid, piece, position);
+
+  const finalGrid = place(newGrid, piece, landingPosition);
+
+  return { grid: finalGrid, position: landingPosition, placed: true }
+}
