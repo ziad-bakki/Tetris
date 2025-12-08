@@ -1,7 +1,7 @@
 import { watch } from "fs/promises";
 import { SPAWN_POSITION } from "../consts/consts";
 import { PIECE_SHAPES } from "../consts/piececonsts";
-import { Color, GridCell, Piece, PieceType, Position, Rotation } from "../interfaces/interfaces";
+import { Color, GameObject, GridCell, Piece, PieceType, Position, Rotation } from "../interfaces/interfaces";
 
 export function makeGrid(): GridCell[][] {
   const cols = 10;
@@ -245,4 +245,36 @@ export function clearLines(grid: GridCell[][]) {
   }
 
   return { grid: newGrid, linesCleared };
+}
+
+export function holdPiece(game: GameObject, position: Position): GameObject {
+  const newGrid = clearPiece(game.grid, game.currentPiece, position);
+
+  const pieceToHold: Piece = {
+    ...game.currentPiece,
+    rotation: 0,
+  }
+
+  if (!game.heldPiece) {
+    // First hold: move next piece to current
+    const nextPiece = game.nextPieces[0];
+    const remainingPieces = game.nextPieces.slice(1);
+    const newNextPieces = [...remainingPieces, generateRandomPiece()];
+
+    return {
+      ...game,
+      grid: newGrid,
+      heldPiece: pieceToHold,
+      currentPiece: nextPiece,
+      nextPieces: newNextPieces,
+    };
+  } else {
+    // Swap current with held piece
+    return {
+      ...game,
+      grid: newGrid,
+      currentPiece: { ...game.heldPiece, rotation: 0 },
+      heldPiece: pieceToHold,
+    };
+  }
 }
