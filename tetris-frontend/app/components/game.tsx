@@ -12,7 +12,8 @@ export default function Game() {
     state: GameState.Running,
     timeElapsed: 0,
     grid: makeGrid(),
-    nextPieces: generateNextPieces(3),
+    nextPieces: generateNextPieces(4),
+    currentPiece: generateRandomPiece(),
   });
   const [piece, setPiece] = useState<Piece>(generateRandomPiece());
   const [position, setPosition] = useState<Position>(SPAWN_POSITION);

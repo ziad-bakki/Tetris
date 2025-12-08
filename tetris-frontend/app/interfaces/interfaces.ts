@@ -36,6 +36,7 @@ export interface GameObject {
   state: GameState,
   timeElapsed: number,
   grid: GridCell[][],
+  currentPiece: Piece,
   nextPieces: Piece[],
   heldPiece?: Piece,
 }
