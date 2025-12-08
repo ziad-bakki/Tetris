@@ -34,7 +34,7 @@ export default function Game() {
 
   return (
     <div className="grid grid-cols-[1fr_auto_1fr] items-start w-full">
-      <div className="m-5">
+      <div className="w-[8vw] h-[8vw] right-0">
         {gameObject.heldPiece &&
           <PiecePreview piece={gameObject.heldPiece}/>
         }
