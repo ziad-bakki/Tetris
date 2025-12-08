@@ -30,6 +30,10 @@ export function generateRandomPiece(): Piece {
   return piece;
 }
 
+export function generateNextPieces(count: number): Piece[] {
+  return Array.from({ length: count }, () => generateRandomPiece());
+}
+
 function clearPiece(grid: GridCell[][], piece: Piece, position: Position) {
   const newGrid = grid.map(row => [...row]);
   const shape = PIECE_SHAPES[piece.type][piece.rotation];

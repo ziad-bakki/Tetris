@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { generateRandomPiece, makeGrid } from "../context/gamecontext";
+import { generateRandomPiece, generateNextPieces, makeGrid } from "../context/gamecontext";
 import Grid from "./grid";
 import { Controls } from "./controls";
 import { Color, GameObject, GameState, Piece, Position } from "../interfaces/interfaces";
@@ -8,41 +8,50 @@ import { useKeyboardControls } from "../context/inputcontext";
 import { useTimer } from "../context/timecontext";
 import Stats from "./stats";
 export default function Game() {
-  const [grid, setGrid] = useState(makeGrid());
+  const [gameObject, setGameObject] = useState<GameObject>({
+    state: GameState.Running,
+    timeElapsed: 0,
+    grid: makeGrid(),
+    nextPieces: generateNextPieces(3),
+  });
   const [piece, setPiece] = useState<Piece>(generateRandomPiece());
   const [position, setPosition] = useState<Position>(SPAWN_POSITION);
-  const [isRunning, setIsRunning] = useState(true);
 
   useKeyboardControls({
-    grid,
-    setGrid,
+    grid: gameObject.grid,
+    setGrid: (grid) => setGameObject({ ...gameObject, grid }),
     piece,
     setPiece,
     position,
     setPosition,
   });
 
-  const {elapsedTime, resetTimer } = useTimer({ isRunning: isRunning });  
+  const { elapsedTime, resetTimer } = useTimer({
+    isRunning: gameObject.state === GameState.Running,
+    onTick: (time) => setGameObject({ ...gameObject, timeElapsed: time })
+  });  
 
   return (
     <div className="grid grid-cols-[1fr_auto_1fr] items-start w-full">
     <div/>
      <div className="flex flex-col h-[55vw]">
       <div className="w-[22.5vw] h-[45vw] border-2 m-5">
-        <Grid grid={grid} setGrid={setGrid} />
+        <Grid grid={gameObject.grid} setGrid={(grid) => setGameObject({ ...gameObject, grid })} />
       </div>
       <Controls
         resetTimer={resetTimer}
-        grid={grid}
-        setGrid={setGrid}
+        grid={gameObject.grid}
+        setGrid={(grid) => setGameObject({ ...gameObject, grid })}
         piece={piece}
         setPiece={setPiece}
         position={position}
         setPosition={setPosition}
+        game={gameObject}
+        setGame={setGameObject}
       />
     </div>
     <div className="m-5">
-    <Stats elapsedTime={elapsedTime} />
+    <Stats game={gameObject} />
     </div>
   </div>
   )

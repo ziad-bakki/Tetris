@@ -36,6 +36,8 @@ export interface GameObject {
   state: GameState,
   timeElapsed: number,
   grid: GridCell[][],
+  nextPieces: Piece[],
+  heldPiece?: Piece,
 }
 
 export type Position = { row: number, col: number }; 

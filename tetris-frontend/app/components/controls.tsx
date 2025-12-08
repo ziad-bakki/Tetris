@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Color, GridCell, Piece } from "../interfaces/interfaces";
-import { moveLeft, moveRight, drawPiece, moveDown, generateRandomPiece, hardDrop, rotateRight } from "../context/gamecontext";
-import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
+import { Color, GameObject, GameState, GridCell, Piece } from "../interfaces/interfaces";
+import { moveLeft, moveRight, drawPiece, moveDown, generateRandomPiece, hardDrop, rotateRight, makeGrid } from "../context/gamecontext";
+import { ArrowDown, ArrowLeft, ArrowRight, Pause, Play, RefreshCcw } from "lucide-react";
 import { PieceType } from "../interfaces/interfaces";
 import { Position } from "../interfaces/interfaces";
 import { SPAWN_POSITION } from "../consts/consts";
@@ -14,9 +14,11 @@ interface ControlsProps {
   position: Position;
   setPosition: (position: Position) => void;
   resetTimer: () => void;
+  game: GameObject;
+  setGame: (game: GameObject) => void;
 }
 
-export function Controls({ grid, setGrid, piece, setPiece, position, setPosition, resetTimer }: ControlsProps) {
+export function Controls({ grid, setGrid, piece, setPiece, position, setPosition, resetTimer, game, setGame }: ControlsProps) {
   const handleMoveLeft = () => {
     const { grid: newGrid, position: newPosition } = moveLeft(grid, piece, position);
     setGrid(newGrid);
@@ -71,14 +73,22 @@ export function Controls({ grid, setGrid, piece, setPiece, position, setPosition
     resetTimer();
   }
 
+  const PauseButton = game.state === GameState.Running ? (<Pause />) : (<Play />);
+
+  const handlePause = () => {
+    if (game.state === GameState.Running) {
+      setGame({ ...game, state: GameState.Paused });
+    } else {
+      setGame({ ...game, state: GameState.Running });
+    }
+  }
+
+
   return (
     <div className="flex flex-row justify-center gap-1">
       <Button variant="destructive" onClick={handleStart}>Start</Button>
-      <Button onClick={handleMoveLeft}><ArrowLeft /></Button>
-      <Button onClick={handleMoveRight}><ArrowRight /></Button>
-      <Button onClick={handleMoveDown}><ArrowDown /></Button>
-      <Button onClick={handleDrop}>Drop</Button>
-      <Button onClick={handleRotate}>Rotate</Button>
+      <Button onClick={handlePause}>{PauseButton}</Button>
+      <Button><RefreshCcw /></Button>
     </div>
   );
 }
