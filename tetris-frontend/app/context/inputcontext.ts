@@ -19,7 +19,7 @@ export function useKeyboardControls({
   setPiece,
   position,
   setPosition,
-}: KeyboardProps): KeyboardProps {
+}: KeyboardProps) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
