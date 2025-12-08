@@ -13,9 +13,10 @@ interface ControlsProps {
   setPiece: (piece: Piece) => void;
   position: Position;
   setPosition: (position: Position) => void;
+  resetTimer: () => void;
 }
 
-export function Controls({ grid, setGrid, piece, setPiece, position, setPosition }: ControlsProps) {
+export function Controls({ grid, setGrid, piece, setPiece, position, setPosition, resetTimer }: ControlsProps) {
   const handleMoveLeft = () => {
     const { grid: newGrid, position: newPosition } = moveLeft(grid, piece, position);
     setGrid(newGrid);
@@ -65,16 +66,19 @@ export function Controls({ grid, setGrid, piece, setPiece, position, setPosition
     setGrid(newGrid);
   };
 
+  const handleStart = () => {
+    handleDraw();
+    resetTimer();
+  }
+
   return (
     <div className="flex flex-row justify-center gap-1">
-      <Button variant="destructive" onClick={() => handleDraw(grid)}>Start</Button>
+      <Button variant="destructive" onClick={handleStart}>Start</Button>
       <Button onClick={handleMoveLeft}><ArrowLeft /></Button>
       <Button onClick={handleMoveRight}><ArrowRight /></Button>
       <Button onClick={handleMoveDown}><ArrowDown /></Button>
       <Button onClick={handleDrop}>Drop</Button>
       <Button onClick={handleRotate}>Rotate</Button>
-
-
     </div>
   );
 }
