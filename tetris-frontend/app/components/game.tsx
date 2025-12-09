@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { generateRandomPiece, generateNextPieces, makeGrid, moveDown, drawPiece } from "../context/gamecontext";
 import Grid from "./grid";
 import { Controls } from "./controls";
@@ -11,28 +11,48 @@ import { PiecePreview } from "./piecepreview";
 export default function Game() {
   const [gameObject, setGameObject] = useState<GameObject>(DEFAULT_GAME_OBJECT);
   const [position, setPosition] = useState<Position>(SPAWN_POSITION);
+  const tickCounterRef = useRef(0);
+  const gameObjectRef = useRef(gameObject);
+  const positionRef = useRef(position);
+
+  // Reset tick counter when game state changes
+  useEffect(() => {
+    tickCounterRef.current = 0;
+  }, [gameObject.state]);
+
+  useEffect(() => {
+    gameObjectRef.current = gameObject;
+  }, [gameObject]);
+  
+  useEffect(() => {
+    positionRef.current = position;
+  }, [position]);
 
   const handleTimerTick = useCallback(() => {
-    let grid = gameObject.grid;
-    if ( gameObject.currentPiece) {
-      const result  = moveDown(gameObject.grid, gameObject.currentPiece, position);
-      if (result.placed) {
-        const nextPiece = gameObject.nextPieces[0];
-        const remainingPieces = gameObject.nextPieces.slice(1);
-        const newNextPieces = [...remainingPieces, generateRandomPiece()];
-        const newGrid = drawPiece( result.grid, nextPiece, SPAWN_POSITION )
-        grid = newGrid;
-        setGameObject({ ...gameObject, nextPieces: newNextPieces, currentPiece: nextPiece, grid: grid});
-        setPosition(SPAWN_POSITION);
-        return;
-      } else {
-        grid = result.grid;
-        setGameObject({ ...gameObject, grid: grid });
-        setPosition(result.position);
-      }
+    tickCounterRef.current += 1;
+
+    // Only move piece down every 5 ticks
+    if (tickCounterRef.current % 5 !== 0) return;
+
+    const currentGame = gameObjectRef.current;
+    const currentPosition = positionRef.current;
+
+    if (!currentGame.currentPiece) return;
+
+
+    const result  = moveDown(currentGame.grid, currentGame.currentPiece, currentPosition);
+    if (result.placed) {
+      const nextPiece = currentGame.nextPieces[0];
+      const remainingPieces = currentGame.nextPieces.slice(1);
+      const newNextPieces = [...remainingPieces, generateRandomPiece()];
+      const newGrid = drawPiece( result.grid, nextPiece, SPAWN_POSITION )
+      setGameObject({ ...currentGame, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid});
+      setPosition(SPAWN_POSITION);
+    } else {
+      setGameObject({ ...currentGame, grid: result.grid });
+      setPosition(result.position);
     }
-    setGameObject((prev) => ({ ...prev, grid: grid }));
-  }, [gameObject, position]);
+  } , []);
 
   const { elapsedTime, resetTimer } = useTimer({
     isRunning: gameObject.state === GameState.Running,

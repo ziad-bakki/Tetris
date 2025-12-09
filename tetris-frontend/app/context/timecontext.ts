@@ -18,12 +18,9 @@ export function useTimer({ isRunning, onTick }: UseTimerProps) {
   useEffect(() => {
     if (isRunning) {
       intervalRef.current = setInterval(() => {
-        setElapsedTime((prev) => {
-          const newTime = prev + 100; // Update every 100ms
+        setElapsedTime((prev) => prev + 100); // Update every 100ms
           onTickRef.current?.();
-          return newTime;
-        });
-      }, 100);
+        }, 100);
     } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
