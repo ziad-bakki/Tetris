@@ -35,7 +35,7 @@ export function generateNextPieces(count: number): Piece[] {
 }
 
 function clearPiece(grid: GridCell[][], piece: Piece, position: Position) {
-  const newGrid = grid.map(row => [...row]);
+  const newGrid = grid.map(row => row.map(cell => ({ ...cell })));
   const shape = PIECE_SHAPES[piece.type][piece.rotation];
 
   for (const offset of shape) {
@@ -54,7 +54,7 @@ function clearPiece(grid: GridCell[][], piece: Piece, position: Position) {
 
 
 export function drawPiece(grid: GridCell[][], piece: Piece, position: Position) {
-  const newGrid = grid.map(row => [...row]);
+  const newGrid = grid.map(row => row.map(cell => ({ ...cell })));
   const shape = PIECE_SHAPES[piece.type][piece.rotation];
 
   // Draw all 4 cells of the piece

@@ -47,14 +47,14 @@ export function useKeyboardControls({
         case "ArrowLeft": {
           if (!game.currentPiece) return;
           const result = moveLeft(grid, game.currentPiece, position);
-          setGrid(result.grid);
+          setGame({ ...game, grid: result.grid });
           setPosition(result.position);
           break;
         }
         case "ArrowRight": {
           if (!game.currentPiece) return;
           const result = moveRight(grid, game.currentPiece, position);
-          setGrid(result.grid);
+          setGame({ ...game, grid: result.grid });
           setPosition(result.position);
           break;
         }
