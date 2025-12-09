@@ -26,12 +26,6 @@ export interface Piece {
   color: Color;
 }
 
-// export class Piece {
-//   constructor(public type: PieceType, public rotation: Rotation, public color: Color) {}
-
-
-// }
-
 export interface GridCell {
   occupied: boolean;
   currentPiece: boolean;
