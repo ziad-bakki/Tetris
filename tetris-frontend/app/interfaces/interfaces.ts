@@ -35,6 +35,7 @@ export interface GridCell {
 export interface GameObject {
   state: GameState,
   grid: GridCell[][],
+  clearedLines: number,
   currentPiece?: Piece,
   nextPieces: Piece[],
   heldPiece?: Piece,

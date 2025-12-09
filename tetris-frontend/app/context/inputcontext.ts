@@ -35,6 +35,7 @@ export function useKeyboardControls({
           nextPieces: nextPieces,
           currentPiece: undefined,
           heldPiece: undefined,
+          clearedLines: 0,
         });
         setPosition(SPAWN_POSITION);
         resetTimer();
@@ -61,16 +62,16 @@ export function useKeyboardControls({
           if (!game.currentPiece) return;
           event.preventDefault();
           const result = moveDown(grid, game.currentPiece, position);
-
+          const clearedLines = result.linesCleared + game.clearedLines;
           if (result.placed) {
             const nextPiece = game.nextPieces[0];
             const remainingPieces = game.nextPieces.slice(1);
             const newNextPieces = [...remainingPieces, generateRandomPiece()];
             const newGrid = drawPiece(result.grid, nextPiece, SPAWN_POSITION);
-            setGame({ ...game, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid });
+            setGame({ ...game, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines });
             setPosition(SPAWN_POSITION);
           } else {
-            setGame({...game, grid: result.grid})
+            setGame({...game, grid: result.grid, clearedLines});
             setPosition(result.position);
           }
           break;
@@ -97,11 +98,12 @@ export function useKeyboardControls({
           if (!game.currentPiece) return;
           event.preventDefault();
           const result = hardDrop(grid, game.currentPiece, position);
+          const clearedLines = result.linesCleared + game.clearedLines;
           const nextPiece = game.nextPieces[0];
           const remainingPieces = game.nextPieces.slice(1);
           const newNextPieces = [...remainingPieces, generateRandomPiece()];
           const newGrid = drawPiece(result.grid, nextPiece, SPAWN_POSITION);
-          setGame({ ...game, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid });
+          setGame({ ...game, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines });
           setPosition(SPAWN_POSITION);
           break;
         }

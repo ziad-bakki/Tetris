@@ -39,16 +39,17 @@ export default function Game() {
       if (!currentGame.currentPiece) return currentGame;
 
       const result = moveDown(currentGame.grid, currentGame.currentPiece, currentPosition);
+      const clearedLines = result.linesCleared + currentGame.clearedLines;
       if (result.placed) {
         const nextPiece = currentGame.nextPieces[0];
         const remainingPieces = currentGame.nextPieces.slice(1);
         const newNextPieces = [...remainingPieces, generateRandomPiece()];
         const newGrid = drawPiece(result.grid, nextPiece, SPAWN_POSITION);
         setPosition(SPAWN_POSITION);
-        return { ...currentGame, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid };
+        return { ...currentGame, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines };
       } else {
         setPosition(result.position);
-        return { ...currentGame, grid: result.grid };
+        return { ...currentGame, grid: result.grid, clearedLines };
       }
     });
   }, []);

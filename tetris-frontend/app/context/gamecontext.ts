@@ -224,7 +224,7 @@ export function clearLines(grid: GridCell[][]) {
   while (newGrid.length < 20) {
     const emptyRow: GridCell[] = [];
     for (let j = 0; j < 10; j++) {
-      emptyRow.push({ occupied: false, currentPiece: false });
+      emptyRow.push({ occupied: false, currentPiece: false, color: Color.Black });
     }
     newGrid.unshift(emptyRow);
   }
