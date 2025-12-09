@@ -1,8 +1,8 @@
 import { useState, useCallback } from "react";
-import { generateRandomPiece, generateNextPieces, makeGrid } from "../context/gamecontext";
+import { generateRandomPiece, generateNextPieces, makeGrid, moveDown, drawPiece } from "../context/gamecontext";
 import Grid from "./grid";
 import { Controls } from "./controls";
-import { Color, GameObject, GameState, Position } from "../interfaces/interfaces";
+import { Color, GameObject, GameState, Piece, Position } from "../interfaces/interfaces";
 import { SPAWN_POSITION, DEFAULT_GAME_OBJECT } from "../consts/consts";
 import { useKeyboardControls } from "../context/inputcontext";
 import { useTimer } from "../context/timecontext";
@@ -12,6 +12,33 @@ export default function Game() {
   const [gameObject, setGameObject] = useState<GameObject>(DEFAULT_GAME_OBJECT);
   const [position, setPosition] = useState<Position>(SPAWN_POSITION);
 
+  const handleTimerTick = useCallback((time: number) => {
+    let grid = gameObject.grid;
+    if ( gameObject.currentPiece) {
+      const result  = moveDown(gameObject.grid, gameObject.currentPiece, position);
+      if (result.placed) {
+        const nextPiece = gameObject.nextPieces[0];
+        const remainingPieces = gameObject.nextPieces.slice(1);
+        const newNextPieces = [...remainingPieces, generateRandomPiece()];
+        const newGrid = drawPiece( result.grid, nextPiece, SPAWN_POSITION )
+        grid = newGrid;
+        setGameObject({ ...gameObject, nextPieces: newNextPieces, currentPiece: nextPiece, grid: grid});
+        setPosition(SPAWN_POSITION);
+        return;
+      } else {
+        grid = result.grid; 
+        setGameObject({ ...gameObject, grid: grid });
+        setPosition(result.position);
+      }
+    }
+    setGameObject((prev) => ({ ...prev, grid: grid, timeElapsed: time }));
+  }, [gameObject, position]);
+
+  const { elapsedTime, resetTimer } = useTimer({
+    isRunning: gameObject.state === GameState.Running,
+    onTick: handleTimerTick
+  });
+
   useKeyboardControls({
     grid: gameObject.grid,
     setGrid: (grid) => setGameObject({ ...gameObject, grid }),
@@ -19,16 +46,8 @@ export default function Game() {
     setPosition,
     game: gameObject,
     setGame: setGameObject,
+    resetTimer,
   });
-
-  const handleTimerTick = useCallback((time: number) => {
-    setGameObject((prev) => ({ ...prev, timeElapsed: time }));
-  }, []);
-
-  const { elapsedTime, resetTimer } = useTimer({
-    isRunning: gameObject.state === GameState.Running,
-    onTick: handleTimerTick
-  });  
 
   return (
     <div className="grid grid-cols-[1fr_auto_1fr] items-start w-full">

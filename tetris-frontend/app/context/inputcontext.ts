@@ -10,6 +10,7 @@ interface KeyboardProps {
   setPosition: (position: Position) => void;
   game: GameObject;
   setGame: (game: GameObject) => void;
+  resetTimer: () => void;
 };
 
 export function useKeyboardControls({
@@ -19,10 +20,29 @@ export function useKeyboardControls({
   setPosition,
   game,
   setGame,
+  resetTimer,
 }: KeyboardProps) {
   useEffect(() => {
-    if (game.state !== GameState.Running) return;
     const handleKeyDown = (event: KeyboardEvent) => {
+      // Allow "j" to work anytime to return to menu
+      if (event.key === "Escape") {
+        event.preventDefault();
+        const newGrid = makeGrid();
+        const nextPieces = generateNextPieces(4);
+        setGame({
+          state: GameState.Menu,
+          timeElapsed: 0,
+          grid: newGrid,
+          nextPieces: nextPieces,
+          currentPiece: undefined,
+          heldPiece: undefined,
+        });
+        setPosition(SPAWN_POSITION);
+        resetTimer();
+        return;
+      }
+
+      if (game.state !== GameState.Running) return;
       switch (event.key) {
         case "ArrowLeft": {
           if (!game.currentPiece) return;
@@ -51,7 +71,7 @@ export function useKeyboardControls({
             setGame({ ...game, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid });
             setPosition(SPAWN_POSITION);
           } else {
-            setGrid(result.grid);
+            setGame({...game, grid: result.grid})
             setPosition(result.position);
           }
           break;
@@ -90,27 +110,9 @@ export function useKeyboardControls({
           event.preventDefault();
           break;
         }
-        case "j": {
-          event.preventDefault();
-          const newGrid = makeGrid();
-          const nextPieces = generateNextPieces(4);
-          const firstPiece = nextPieces[0];
-          const gridWithPiece = drawPiece(newGrid, firstPiece, SPAWN_POSITION);
-          setGame({
-            state: GameState.Running,
-            timeElapsed: 0,
-            grid: gridWithPiece,
-            nextPieces: [...nextPieces.slice(1), generateRandomPiece()],
-            currentPiece: firstPiece,
-            heldPiece: undefined,
-          });
-          setGrid(gridWithPiece);
-          setPosition(SPAWN_POSITION);
-          break;
-        }
       }
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [grid, position, setGrid, setPosition, game, setGame]);
+  }, [grid, position, setGrid, setPosition, game, setGame, resetTimer]);
 }

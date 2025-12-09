@@ -10,7 +10,7 @@ export function makeGrid(): GridCell[][] {
   for (let i = 0; i < rows; i++) {
     grid.push([]);
     for (let j = 0; j < cols; j++) {
-      const cell: GridCell = { occupied: false, currentPiece: false }
+      const cell: GridCell = { occupied: false, currentPiece: false, color: Color.Black }
       grid[i].push(cell);
     }
   }
