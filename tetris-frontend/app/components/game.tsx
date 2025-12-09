@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { generateRandomPiece, generateNextPieces, makeGrid } from "../context/gamecontext";
 import Grid from "./grid";
 import { Controls } from "./controls";
@@ -21,9 +21,13 @@ export default function Game() {
     setGame: setGameObject,
   });
 
+  const handleTimerTick = useCallback((time: number) => {
+    setGameObject((prev) => ({ ...prev, timeElapsed: time }));
+  }, []);
+
   const { elapsedTime, resetTimer } = useTimer({
     isRunning: gameObject.state === GameState.Running,
-    onTick: (time) => setGameObject({ ...gameObject, timeElapsed: time })
+    onTick: handleTimerTick
   });  
 
   return (
