@@ -12,7 +12,7 @@ export default function Game() {
   const [gameObject, setGameObject] = useState<GameObject>(DEFAULT_GAME_OBJECT);
   const [position, setPosition] = useState<Position>(SPAWN_POSITION);
 
-  const handleTimerTick = useCallback((time: number) => {
+  const handleTimerTick = useCallback(() => {
     let grid = gameObject.grid;
     if ( gameObject.currentPiece) {
       const result  = moveDown(gameObject.grid, gameObject.currentPiece, position);
@@ -26,12 +26,12 @@ export default function Game() {
         setPosition(SPAWN_POSITION);
         return;
       } else {
-        grid = result.grid; 
+        grid = result.grid;
         setGameObject({ ...gameObject, grid: grid });
         setPosition(result.position);
       }
     }
-    setGameObject((prev) => ({ ...prev, grid: grid, timeElapsed: time }));
+    setGameObject((prev) => ({ ...prev, grid: grid }));
   }, [gameObject, position]);
 
   const { elapsedTime, resetTimer } = useTimer({
@@ -69,7 +69,7 @@ export default function Game() {
       />
     </div>
     <div className="m-5">
-    <Stats game={gameObject} />
+    <Stats game={gameObject} elapsedTime={elapsedTime} />
     </div>
   </div>
   )

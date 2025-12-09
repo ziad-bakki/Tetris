@@ -31,7 +31,6 @@ export function useKeyboardControls({
         const nextPieces = generateNextPieces(4);
         setGame({
           state: GameState.Menu,
-          timeElapsed: 0,
           grid: newGrid,
           nextPieces: nextPieces,
           currentPiece: undefined,

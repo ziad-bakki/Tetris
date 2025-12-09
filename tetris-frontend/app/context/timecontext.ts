@@ -2,19 +2,25 @@ import { useEffect, useRef, useState } from "react";
 
 interface UseTimerProps {
   isRunning: boolean;
-  onTick?: (elapsedTime: number) => void;
+  onTick?: () => void;
 }
 
 export function useTimer({ isRunning, onTick }: UseTimerProps) {
   const [elapsedTime, setElapsedTime] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const onTickRef = useRef(onTick);
+
+  // Update ref when onTick changes
+  useEffect(() => {
+    onTickRef.current = onTick;
+  }, [onTick]);
 
   useEffect(() => {
     if (isRunning) {
       intervalRef.current = setInterval(() => {
         setElapsedTime((prev) => {
           const newTime = prev + 100; // Update every 100ms
-          onTick?.(newTime);
+          onTickRef.current?.();
           return newTime;
         });
       }, 100);
@@ -30,7 +36,7 @@ export function useTimer({ isRunning, onTick }: UseTimerProps) {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, onTick]);
+  }, [isRunning]);
 
   const resetTimer = () => setElapsedTime(0);
 
