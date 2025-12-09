@@ -93,17 +93,9 @@ export function moveRight(grid: GridCell[][], piece: Piece, position: Position) 
     }
   }
 
-  // Clear old piece
-  const newGrid = clearPiece(grid, piece, position);
-
-  // Draw piece at new position
-  for (const offset of shape) {
-    const actualRow = newPosition.row + offset.row;
-    const actualCol = newPosition.col + offset.col;
-    newGrid[actualRow][actualCol].currentPiece = true;
-    newGrid[actualRow][actualCol].occupied = true;
-    newGrid[actualRow][actualCol].color = piece.color;
-  }
+  // Clear old piece and draw at new position
+  const clearedGrid = clearPiece(grid, piece, position);
+  const newGrid = drawPiece(clearedGrid, piece, newPosition);
 
   return { grid: newGrid, position: newPosition };
 }
@@ -130,17 +122,9 @@ export function moveLeft(grid: GridCell[][], piece: Piece, position: Position) {
 
   }
 
-  // Clear old piece
-  const newGrid = clearPiece(grid, piece, position);
-
-  // Draw piece at new position
-  for (const offset of shape) {
-    const actualRow = newPosition.row + offset.row;
-    const actualCol = newPosition.col + offset.col;
-    newGrid[actualRow][actualCol].currentPiece = true;
-    newGrid[actualRow][actualCol].occupied = true;
-    newGrid[actualRow][actualCol].color = piece.color;
-  }
+  // Clear old piece and draw at new position
+  const clearedGrid = clearPiece(grid, piece, position);
+  const newGrid = drawPiece(clearedGrid, piece, newPosition);
 
   return { grid: newGrid, position: newPosition };
 }

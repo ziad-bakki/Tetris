@@ -34,25 +34,24 @@ export default function Game() {
     // Only move piece down every 5 ticks
     if (tickCounterRef.current % 5 !== 0) return;
 
-    const currentGame = gameObjectRef.current;
-    const currentPosition = positionRef.current;
+    setGameObject((currentGame) => {
+      const currentPosition = positionRef.current;
+      if (!currentGame.currentPiece) return currentGame;
 
-    if (!currentGame.currentPiece) return;
-
-
-    const result  = moveDown(currentGame.grid, currentGame.currentPiece, currentPosition);
-    if (result.placed) {
-      const nextPiece = currentGame.nextPieces[0];
-      const remainingPieces = currentGame.nextPieces.slice(1);
-      const newNextPieces = [...remainingPieces, generateRandomPiece()];
-      const newGrid = drawPiece( result.grid, nextPiece, SPAWN_POSITION )
-      setGameObject({ ...currentGame, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid});
-      setPosition(SPAWN_POSITION);
-    } else {
-      setGameObject({ ...currentGame, grid: result.grid });
-      setPosition(result.position);
-    }
-  } , []);
+      const result = moveDown(currentGame.grid, currentGame.currentPiece, currentPosition);
+      if (result.placed) {
+        const nextPiece = currentGame.nextPieces[0];
+        const remainingPieces = currentGame.nextPieces.slice(1);
+        const newNextPieces = [...remainingPieces, generateRandomPiece()];
+        const newGrid = drawPiece(result.grid, nextPiece, SPAWN_POSITION);
+        setPosition(SPAWN_POSITION);
+        return { ...currentGame, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid };
+      } else {
+        setPosition(result.position);
+        return { ...currentGame, grid: result.grid };
+      }
+    });
+  }, []);
 
   const { elapsedTime, resetTimer } = useTimer({
     isRunning: gameObject.state === GameState.Running,
