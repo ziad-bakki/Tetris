@@ -3,18 +3,13 @@ import { generateRandomPiece, generateNextPieces, makeGrid } from "../context/ga
 import Grid from "./grid";
 import { Controls } from "./controls";
 import { Color, GameObject, GameState, Position } from "../interfaces/interfaces";
-import { SPAWN_POSITION } from "../consts/consts";
+import { SPAWN_POSITION, DEFAULT_GAME_OBJECT } from "../consts/consts";
 import { useKeyboardControls } from "../context/inputcontext";
 import { useTimer } from "../context/timecontext";
 import Stats from "./stats";
 import { PiecePreview } from "./piecepreview";
 export default function Game() {
-  const [gameObject, setGameObject] = useState<GameObject>({
-    state: GameState.Paused,
-    timeElapsed: 0,
-    grid: makeGrid(),
-    nextPieces: generateNextPieces(4),
-  });
+  const [gameObject, setGameObject] = useState<GameObject>(DEFAULT_GAME_OBJECT);
   const [position, setPosition] = useState<Position>(SPAWN_POSITION);
 
   useKeyboardControls({

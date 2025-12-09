@@ -1,5 +1,5 @@
 import { watch } from "fs/promises";
-import { SPAWN_POSITION } from "../consts/consts";
+import { DEFAULT_GAME_OBJECT, SPAWN_POSITION } from "../consts/consts";
 import { PIECE_SHAPES } from "../consts/piececonsts";
 import { Color, GameObject, GridCell, Piece, PieceType, Position, Rotation } from "../interfaces/interfaces";
 
@@ -50,6 +50,7 @@ function clearPiece(grid: GridCell[][], piece: Piece, position: Position) {
 
   return newGrid;
 }
+
 
 
 export function drawPiece(grid: GridCell[][], piece: Piece, position: Position) {

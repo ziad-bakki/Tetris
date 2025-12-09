@@ -68,7 +68,7 @@ export function Controls({ grid, setPosition, resetTimer, game, setGame }: Contr
 
 
   const PauseButton = game.state === GameState.Running ? (<Pause />) : (<Play />);
-
+  const running = game.state === GameState.Running || game.state === GameState.Paused;
   const handlePause = () => {
     if (game.state === GameState.Running) {
       setGame({ ...game, state: GameState.Paused });
@@ -80,9 +80,14 @@ export function Controls({ grid, setPosition, resetTimer, game, setGame }: Contr
 
   return (
     <div className="flex flex-row justify-center gap-1">
-      <Button variant="destructive" onClick={handleStart}>Start</Button>
-      <Button onClick={handlePause}>{PauseButton}</Button>
-      <Button><RefreshCcw /></Button>
+      {
+        game.state === GameState.Menu &&
+        <Button variant="destructive" onClick={handleStart}>Start</Button>
+      }
+      {
+        running &&
+        <Button onClick={handlePause}>{PauseButton}</Button>
+      }
     </div>
   );
 }

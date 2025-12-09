@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { GameObject, GameState, GridCell, Position } from "../interfaces/interfaces";
-import { drawPiece, generateRandomPiece, hardDrop, holdPiece, moveDown, moveLeft, moveRight, rotateRight } from "./gamecontext";
+import { drawPiece, generateNextPieces, generateRandomPiece, hardDrop, holdPiece, makeGrid, moveDown, moveLeft, moveRight, rotateRight } from "./gamecontext";
 import { SPAWN_POSITION } from "../consts/consts";
 
 interface KeyboardProps {
@@ -10,7 +10,7 @@ interface KeyboardProps {
   setPosition: (position: Position) => void;
   game: GameObject;
   setGame: (game: GameObject) => void;
-}
+};
 
 export function useKeyboardControls({
   grid,
@@ -88,12 +88,29 @@ export function useKeyboardControls({
         }
         case "Enter": {
           event.preventDefault();
+          break;
+        }
+        case "j": {
+          event.preventDefault();
+          const newGrid = makeGrid();
+          const nextPieces = generateNextPieces(4);
+          const firstPiece = nextPieces[0];
+          const gridWithPiece = drawPiece(newGrid, firstPiece, SPAWN_POSITION);
+          setGame({
+            state: GameState.Running,
+            timeElapsed: 0,
+            grid: gridWithPiece,
+            nextPieces: [...nextPieces.slice(1), generateRandomPiece()],
+            currentPiece: firstPiece,
+            heldPiece: undefined,
+          });
+          setGrid(gridWithPiece);
+          setPosition(SPAWN_POSITION);
+          break;
         }
       }
     }
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [grid, position, setGrid, setPosition, game, setGame])
-
-
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [grid, position, setGrid, setPosition, game, setGame]);
 }
