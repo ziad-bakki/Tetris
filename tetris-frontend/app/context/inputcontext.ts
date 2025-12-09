@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { GameObject, GridCell, Position } from "../interfaces/interfaces";
+import { GameObject, GameState, GridCell, Position } from "../interfaces/interfaces";
 import { drawPiece, generateRandomPiece, hardDrop, holdPiece, moveDown, moveLeft, moveRight, rotateRight } from "./gamecontext";
 import { SPAWN_POSITION } from "../consts/consts";
 
@@ -21,21 +21,25 @@ export function useKeyboardControls({
   setGame,
 }: KeyboardProps) {
   useEffect(() => {
+    if (game.state !== GameState.Running) return;
     const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
         case "ArrowLeft": {
+          if (!game.currentPiece) return;
           const result = moveLeft(grid, game.currentPiece, position);
           setGrid(result.grid);
           setPosition(result.position);
           break;
         }
         case "ArrowRight": {
+          if (!game.currentPiece) return;
           const result = moveRight(grid, game.currentPiece, position);
           setGrid(result.grid);
           setPosition(result.position);
           break;
         }
         case "ArrowDown": {
+          if (!game.currentPiece) return;
           event.preventDefault();
           const result = moveDown(grid, game.currentPiece, position);
 
@@ -53,6 +57,7 @@ export function useKeyboardControls({
           break;
         }
         case "ArrowUp": {
+          if (!game.currentPiece) return;
           const result = rotateRight(grid, game.currentPiece, position);
           setGame({ ...game, currentPiece: result.piece, grid: result.grid });
           setPosition(result.position);
@@ -60,7 +65,9 @@ export function useKeyboardControls({
         }
         case "c": {
           event.preventDefault();
+          if (!game.currentPiece) return;
           const newGame = holdPiece(game, position);
+          if (!newGame.currentPiece) return;
           const newGrid = drawPiece(newGame.grid, newGame.currentPiece, SPAWN_POSITION);
           setPosition(SPAWN_POSITION);
           setGrid(newGrid);
@@ -68,6 +75,7 @@ export function useKeyboardControls({
           break;
         }
         case " ": {
+          if (!game.currentPiece) return;
           event.preventDefault();
           const result = hardDrop(grid, game.currentPiece, position);
           const nextPiece = game.nextPieces[0];

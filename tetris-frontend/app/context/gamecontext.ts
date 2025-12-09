@@ -248,6 +248,9 @@ export function clearLines(grid: GridCell[][]) {
 }
 
 export function holdPiece(game: GameObject, position: Position): GameObject {
+  if (!game.currentPiece) {
+    return game; // No current piece to hold
+  }
   const newGrid = clearPiece(game.grid, game.currentPiece, position);
 
   const pieceToHold: Piece = {

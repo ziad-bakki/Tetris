@@ -10,11 +10,10 @@ import Stats from "./stats";
 import { PiecePreview } from "./piecepreview";
 export default function Game() {
   const [gameObject, setGameObject] = useState<GameObject>({
-    state: GameState.Running,
+    state: GameState.Paused,
     timeElapsed: 0,
     grid: makeGrid(),
     nextPieces: generateNextPieces(4),
-    currentPiece: generateRandomPiece(),
   });
   const [position, setPosition] = useState<Position>(SPAWN_POSITION);
 

@@ -61,7 +61,7 @@ export function Controls({ grid, setPosition, resetTimer, game, setGame }: Contr
     const newNextPieces = [...remainingPieces, generateRandomPiece()];
     const newPosition = SPAWN_POSITION;
     const newGrid = drawPiece(grid, nextPiece, newPosition);
-    setGame({ ...game, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid });
+    setGame({ ...game, state: GameState.Running, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid });
     setPosition(newPosition);
     resetTimer();
   };
