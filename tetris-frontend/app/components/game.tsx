@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, ReactElement } from "react";
 import { generateRandomPiece, generateNextPieces, makeGrid, moveDown, drawPiece, canSpawn } from "../context/gamecontext";
 import Grid from "./grid";
 import { Controls } from "./controls";
@@ -77,7 +77,7 @@ export default function Game() {
     resetTimer,
   });
 
-  const gameText = (
+  const gameText: ReactElement = (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl">
       <GameText gameState={gameObject.state} />
     </div>

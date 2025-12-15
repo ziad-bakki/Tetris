@@ -3,6 +3,7 @@ export enum GameState {
   Running,
   Paused,
   Over,
+  Win
 }
 
 export enum Color {
