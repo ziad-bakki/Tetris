@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Color, GameObject, GameState, GridCell } from "../interfaces/interfaces";
-import { moveLeft, moveRight, drawPiece, moveDown, generateRandomPiece, hardDrop, rotateRight, makeGrid } from "../context/gamecontext";
-import { ArrowDown, ArrowLeft, ArrowRight, Pause, Play, RefreshCcw } from "lucide-react";
-import { PieceType } from "../interfaces/interfaces";
+import { GameObject, GameState, GridCell } from "../interfaces/interfaces";
+import { drawPiece, generateRandomPiece } from "../context/gamecontext";
+import { Pause, Play } from "lucide-react";
 import { Position } from "../interfaces/interfaces";
 import { SPAWN_POSITION } from "../consts/consts";
 
@@ -15,45 +14,6 @@ interface ControlsProps {
 }
 
 export function Controls({ grid, setPosition, resetTimer, game, setGame }: ControlsProps) {
-  // const handleMoveLeft = () => {
-  //   const { grid: newGrid, position: newPosition } = moveLeft(grid, piece, position);
-  //   setGrid(newGrid);
-  //   setPosition(newPosition);
-  // };
-
-  // const handleMoveRight = () => {
-  //   const { grid: newGrid, position: newPosition } = moveRight(grid, piece, position);
-  //   setGrid(newGrid);
-  //   setPosition(newPosition);
-  // };
-
-  // const handleMoveDown = () => {
-  //   const { grid: newGrid, position: newPosition, placed } = moveDown(grid, piece, position);
-  //   setGrid(newGrid);
-
-  //   if (placed) {
-  //     const newPiece = generateRandomPiece();
-  //     const spawnPosition = SPAWN_POSITION;
-  //     const gridWithNewPiece = drawPiece(newGrid, newPiece, spawnPosition);
-  //     setPiece(newPiece);
-  //     setPosition(spawnPosition);
-  //     setGrid(gridWithNewPiece);
-  //   } else {
-  //     setPosition(newPosition);
-  //   }
-  // }
-
-  // const handleRotate = () => {
-  //   const { grid: newGrid, piece: newPiece, position: newPosition } = rotateRight(grid, piece, position);
-  //   setGrid(newGrid);
-  //   setPiece(newPiece);
-  //   setPosition(newPosition);
-  // }
-
-  // const handleDrop = () => {
-  //   const { grid: newGrid, position: newPosition, placed } = hardDrop(grid, piece, position);
-  //   handleDraw(newGrid);
-  // }
 
   const handleStart = () => {
     const nextPiece = game.nextPieces[0];

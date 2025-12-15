@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { generateRandomPiece, generateNextPieces, makeGrid, moveDown, drawPiece } from "../context/gamecontext";
+import { generateRandomPiece, generateNextPieces, makeGrid, moveDown, drawPiece, canSpawn } from "../context/gamecontext";
 import Grid from "./grid";
 import { Controls } from "./controls";
 import { Color, GameObject, GameState, Piece, Position } from "../interfaces/interfaces";
@@ -23,7 +23,7 @@ export default function Game() {
   useEffect(() => {
     gameObjectRef.current = gameObject;
   }, [gameObject]);
-  
+
   useEffect(() => {
     positionRef.current = position;
   }, [position]);
@@ -44,9 +44,16 @@ export default function Game() {
         const nextPiece = currentGame.nextPieces[0];
         const remainingPieces = currentGame.nextPieces.slice(1);
         const newNextPieces = [...remainingPieces, generateRandomPiece()];
+        let state = undefined;
+        if (!canSpawn(result.grid, nextPiece, SPAWN_POSITION)) {
+          state = GameState.Over;
+        }
+        else {
+          state = currentGame.state;
+        }
         const newGrid = drawPiece(result.grid, nextPiece, SPAWN_POSITION);
         setPosition(SPAWN_POSITION);
-        return { ...currentGame, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines };
+        return { ...currentGame, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines };
       } else {
         setPosition(result.position);
         return { ...currentGame, grid: result.grid, clearedLines };
@@ -73,24 +80,24 @@ export default function Game() {
     <div className="grid grid-cols-[1fr_auto_1fr] items-start w-full">
       <div className="w-[8vw] h-[8vw] right-0">
         {gameObject.heldPiece &&
-          <PiecePreview piece={gameObject.heldPiece}/>
+          <PiecePreview piece={gameObject.heldPiece} />
         }
       </div>
-     <div className="flex flex-col h-[55vw]">
-      <div className="w-[22.5vw] h-[45vw] border-2 m-5">
-        <Grid grid={gameObject.grid} setGrid={(grid) => setGameObject({ ...gameObject, grid })} />
+      <div className="flex flex-col h-[55vw]">
+        <div className="w-[22.5vw] h-[45vw] border-2 m-5">
+          <Grid grid={gameObject.grid} setGrid={(grid) => setGameObject({ ...gameObject, grid })} />
+        </div>
+        <Controls
+          resetTimer={resetTimer}
+          grid={gameObject.grid}
+          setPosition={setPosition}
+          game={gameObject}
+          setGame={setGameObject}
+        />
       </div>
-      <Controls
-        resetTimer={resetTimer}
-        grid={gameObject.grid}
-        setPosition={setPosition}
-        game={gameObject}
-        setGame={setGameObject}
-      />
+      <div className="m-5">
+        <Stats game={gameObject} elapsedTime={elapsedTime} />
+      </div>
     </div>
-    <div className="m-5">
-    <Stats game={gameObject} elapsedTime={elapsedTime} />
-    </div>
-  </div>
   )
 }

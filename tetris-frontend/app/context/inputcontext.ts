@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { GameObject, GameState, GridCell, Position } from "../interfaces/interfaces";
-import { drawPiece, generateNextPieces, generateRandomPiece, hardDrop, holdPiece, makeGrid, moveDown, moveLeft, moveRight, rotateRight } from "./gamecontext";
+import { canSpawn, drawPiece, generateNextPieces, generateRandomPiece, hardDrop, holdPiece, makeGrid, moveDown, moveLeft, moveRight, rotateRight } from "./gamecontext";
 import { SPAWN_POSITION } from "../consts/consts";
 
 interface KeyboardProps {
@@ -67,11 +67,18 @@ export function useKeyboardControls({
             const nextPiece = game.nextPieces[0];
             const remainingPieces = game.nextPieces.slice(1);
             const newNextPieces = [...remainingPieces, generateRandomPiece()];
+            let state = undefined;
+            if (!canSpawn(result.grid, nextPiece, SPAWN_POSITION)) {
+              state = GameState.Over;
+            }
+            else {
+              state = game.state;
+            }
             const newGrid = drawPiece(result.grid, nextPiece, SPAWN_POSITION);
-            setGame({ ...game, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines });
+            setGame({ ...game, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines });
             setPosition(SPAWN_POSITION);
           } else {
-            setGame({...game, grid: result.grid, clearedLines});
+            setGame({ ...game, grid: result.grid, clearedLines });
             setPosition(result.position);
           }
           break;
@@ -102,8 +109,15 @@ export function useKeyboardControls({
           const nextPiece = game.nextPieces[0];
           const remainingPieces = game.nextPieces.slice(1);
           const newNextPieces = [...remainingPieces, generateRandomPiece()];
+          let state = undefined;
+          if (!canSpawn(result.grid, nextPiece, SPAWN_POSITION)) {
+            state = GameState.Over;
+          }
+          else {
+            state = game.state;
+          }
           const newGrid = drawPiece(result.grid, nextPiece, SPAWN_POSITION);
-          setGame({ ...game, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines });
+          setGame({ ...game, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines });
           setPosition(SPAWN_POSITION);
           break;
         }

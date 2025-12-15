@@ -1,5 +1,3 @@
-import { watch } from "fs/promises";
-import { DEFAULT_GAME_OBJECT, SPAWN_POSITION } from "../consts/consts";
 import { PIECE_SHAPES } from "../consts/piececonsts";
 import { Color, GameObject, GridCell, Piece, PieceType, Position, Rotation } from "../interfaces/interfaces";
 
@@ -285,4 +283,19 @@ export function holdPiece(game: GameObject, position: Position): GameObject {
       heldPiece: pieceToHold,
     };
   }
+}
+
+export function canSpawn(grid: GridCell[][], piece: Piece, spawnPosition: Position): boolean {
+  const shape = PIECE_SHAPES[piece.type][piece.rotation];
+
+  for (const offset of shape) {
+    const actualRow = spawnPosition.row + offset.row;
+    const actualCol = spawnPosition.col + offset.col;
+
+    // If spawn position is already occupied, game over
+    if (actualRow >= 0 && grid[actualRow][actualCol].occupied) {
+      return false;
+    }
+  }
+  return true;
 }
