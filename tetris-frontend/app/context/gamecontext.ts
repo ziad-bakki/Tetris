@@ -37,6 +37,7 @@ export function generateNextPieces(count: number): Piece[] {
 function clearPiece(grid: GridCell[][], piece: Piece, position: Position) {
   const newGrid = grid.map(row => row.map(cell => ({ ...cell })));
   const shape = PIECE_SHAPES[piece.type][piece.rotation];
+  const landingPos = findLandingPosition(newGrid, piece, position);
 
   for (const offset of shape) {
     const actualRow = position.row + offset.row;
@@ -45,6 +46,14 @@ function clearPiece(grid: GridCell[][], piece: Piece, position: Position) {
       newGrid[actualRow][actualCol].currentPiece = false;
       newGrid[actualRow][actualCol].occupied = false;
       newGrid[actualRow][actualCol].color = Color.Black;
+    }
+
+    const landingRow = landingPos.row + offset.row;
+    const landingCol = landingPos.col + offset.col;
+    if (landingRow >= 0 && landingCol >= 0) {
+      newGrid[landingRow][landingCol].currentPiece = false;
+      newGrid[landingRow][landingCol].occupied = false;
+      newGrid[landingRow][landingCol].color = Color.Black;
     }
   }
 
@@ -56,18 +65,29 @@ function clearPiece(grid: GridCell[][], piece: Piece, position: Position) {
 export function drawPiece(grid: GridCell[][], piece: Piece, position: Position) {
   const newGrid = grid.map(row => row.map(cell => ({ ...cell })));
   const shape = PIECE_SHAPES[piece.type][piece.rotation];
+  const landingPos: Position = findLandingPosition(newGrid, piece, position);
 
   // Draw all 4 cells of the piece
   shape.forEach(offset => {
     const actualRow = position.row + offset.row;
     const actualCol = position.col + offset.col;
+    const landingRow = landingPos.row + offset.row;
+    const landingCol = landingPos.col + offset.col;
 
     if (actualRow >= 0 && actualRow < grid.length && actualCol >= 0 && actualCol < grid[0].length) {
       newGrid[actualRow][actualCol].currentPiece = true;
       newGrid[actualRow][actualCol].color = piece.color;
       newGrid[actualRow][actualCol].occupied = true;
     }
+    if (landingRow >= 0 && landingRow < grid.length && landingCol >= 0 && landingCol < grid[0].length) {
+      newGrid[landingRow][landingCol].currentPiece = false;
+      newGrid[landingRow][landingCol].color = piece.color + "80" as Color;
+      newGrid[landingRow][landingCol].occupied = false;
+    }
   });
+
+
+
 
   return newGrid;
 }
