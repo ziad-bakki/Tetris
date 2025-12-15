@@ -8,6 +8,7 @@ import { useKeyboardControls } from "../context/inputcontext";
 import { useTimer } from "../context/timecontext";
 import Stats from "./stats";
 import { PiecePreview } from "./piecepreview";
+import GameText from "./gametext";
 export default function Game() {
   const [gameObject, setGameObject] = useState<GameObject>(DEFAULT_GAME_OBJECT);
   const [position, setPosition] = useState<Position>(SPAWN_POSITION);
@@ -76,6 +77,12 @@ export default function Game() {
     resetTimer,
   });
 
+  const gameText = (
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl">
+      <GameText gameState={gameObject.state} />
+    </div>
+  );
+
   return (
     <div className="grid grid-cols-[1fr_auto_1fr] items-start w-full">
       <div className="w-[8vw] h-[8vw] right-0">
@@ -84,8 +91,9 @@ export default function Game() {
         }
       </div>
       <div className="flex flex-col h-[55vw]">
-        <div className="w-[22.5vw] h-[45vw] border-2 m-5">
+        <div className="relative w-[22.5vw] h-[45vw] border-2 m-5">
           <Grid grid={gameObject.grid} setGrid={(grid) => setGameObject({ ...gameObject, grid })} />
+          {!(gameObject.state === GameState.Running) && gameText}
         </div>
         <Controls
           resetTimer={resetTimer}
