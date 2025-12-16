@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { GameObject, GameState, GridCell, Position } from "../interfaces/interfaces";
-import { canSpawn, drawPiece, generateNextPieces, hardDrop, holdPiece, makeGrid, moveDown, moveLeft, moveRight, rotateRight } from "./gamecontext";
+import { canSpawn, drawPiece, generateNextPieces, hardDrop, holdPiece, makeGrid, moveDown, moveLeft, moveRight, rotateRight, Start } from "./gamecontext";
 import { SPAWN_POSITION } from "../consts/consts";
 
 interface KeyboardProps {
@@ -27,16 +27,8 @@ export function useKeyboardControls({
       // Allow "j" to work anytime to return to menu
       if (event.key === "j") {
         event.preventDefault();
-        const newGrid = makeGrid();
-        const nextPieces = generateNextPieces(undefined, 4);
-        setGame({
-          state: GameState.Running,
-          grid: newGrid,
-          nextPieces: nextPieces,
-          currentPiece: undefined,
-          heldPiece: undefined,
-          clearedLines: 0,
-        });
+        const newGame = Start(game);
+        setGame(newGame);
         setPosition(SPAWN_POSITION);
         resetTimer();
         return;

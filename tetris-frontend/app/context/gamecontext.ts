@@ -1,6 +1,15 @@
+import { SPAWN_POSITION } from "../consts/consts";
 import { PIECE_SHAPES } from "../consts/piececonsts";
-import { Color, GameObject, GridCell, Piece, PieceType, Position, Rotation } from "../interfaces/interfaces";
+import { Color, GameObject, GameState, GridCell, Piece, PieceType, Position, Rotation } from "../interfaces/interfaces";
 
+export const DEFAULT_GAME_OBJECT: GameObject = {
+  state: GameState.Menu,
+  grid: makeGrid(),
+  clearedLines: 0,
+  nextPieces: generateNextPieces(undefined, 4),
+  currentPiece: undefined,
+  heldPiece: undefined,
+}
 export function makeGrid(): GridCell[][] {
   const cols = 10;
   const rows = 20;
@@ -19,7 +28,7 @@ export function makeGrid(): GridCell[][] {
 
 export function generateNextPieces(game: GameObject | undefined, count: number): Piece[] {
   const pieceTypes: PieceType[] = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'];
-  const newPieces: Piece[] = game ? game.nextPieces : [];
+  const newPieces: Piece[] = game ? [...game.nextPieces] : [];
   const shuffle = (arr: PieceType[]) => {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -30,15 +39,15 @@ export function generateNextPieces(game: GameObject | undefined, count: number):
 
   while (newPieces.length < count + 1) {
     const shuffled = shuffle([...pieceTypes])
-    const newPiece: Piece = {
-      type: shuffled[0],
-      rotation: 0,
-      color: Color[shuffled[0]],
-
+    for (const piece of shuffled) {
+      newPieces.push({
+        type: piece,
+        rotation: 0,
+        color: Color[piece],
+      });
     }
-    newPieces.push(newPiece);
   }
-  return newPieces;
+  return newPieces.slice(0, count);
 
 }
 
@@ -309,3 +318,15 @@ export function canSpawn(grid: GridCell[][], piece: Piece, spawnPosition: Positi
   }
   return true;
 }
+
+
+export function Start(game: GameObject): GameObject {
+  const nextPiece = game.nextPieces[0];
+  const tempGame: GameObject = { ...game, nextPieces: game.nextPieces.slice(1) };
+  const newNextPieces = generateNextPieces(tempGame, 4);
+  const newPosition = SPAWN_POSITION;
+  const newGrid = drawPiece(makeGrid(), nextPiece, newPosition);
+  return { ...game, state: GameState.Running, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, heldPiece: undefined }
+}
+
+

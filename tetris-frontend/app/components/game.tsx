@@ -1,9 +1,10 @@
 import { useState, useCallback, useRef, useEffect, ReactElement } from "react";
-import { generateNextPieces, makeGrid, moveDown, drawPiece, canSpawn } from "../context/gamecontext";
+import { generateNextPieces, makeGrid, moveDown, drawPiece, canSpawn, DEFAULT_GAME_OBJECT } from "../context/gamecontext";
 import Grid from "./grid";
 import { Controls } from "./controls";
 import { Color, GameObject, GameState, Piece, Position } from "../interfaces/interfaces";
-import { SPAWN_POSITION, DEFAULT_GAME_OBJECT } from "../consts/consts";
+import { SPAWN_POSITION, } from "../consts/consts";
+
 import { useKeyboardControls } from "../context/inputcontext";
 import { useTimer } from "../context/timecontext";
 import Stats from "./stats";
