@@ -27,8 +27,7 @@ export function Controls({ grid, setPosition, resetTimer, game, setGame }: Contr
   };
 
 
-  const PauseButton = game.state === GameState.Running ? (<Pause />) : (<Play />);
-  const running = game.state === GameState.Running || game.state === GameState.Paused;
+  const running = game.state === GameState.Running;
   const handlePause = () => {
     if (game.state === GameState.Running) {
       setGame({ ...game, state: GameState.Paused });
@@ -46,7 +45,9 @@ export function Controls({ grid, setPosition, resetTimer, game, setGame }: Contr
       }
       {
         running &&
-        <Button onClick={handlePause}>{PauseButton}</Button>
+        <Button onClick={handlePause}>
+          <Pause />
+        </Button>
       }
     </div>
   );

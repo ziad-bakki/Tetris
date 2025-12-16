@@ -1,4 +1,5 @@
-import { GameState } from "../interfaces/interfaces"
+import { Button } from "@/components/ui/button";
+import { GameObject, GameState } from "../interfaces/interfaces"
 import {
   Dialog,
   DialogContent,
@@ -10,7 +11,8 @@ import {
 
 
 interface GameTextProps {
-  gameState: GameState;
+  game: GameObject;
+  setGame: (game: GameObject) => void;
 }
 
 function getGameText(state: GameState): string {
@@ -33,8 +35,34 @@ function getGameText(state: GameState): string {
   }
 }
 
-export default function GameText({ gameState }: GameTextProps) {
+function getGameDescription(state: GameState): string {
+  switch (state) {
+    case GameState.Menu: {
+      return "Click Start to Begin";
+    }
+    case GameState.Win: {
+      return "You Win"
+    }
+    case GameState.Over: {
+      return "You Lose";
+    }
+    case GameState.Paused: {
+      return "Click the Button Below to Continue"
+    }
+    case GameState.Running: {
+      return "Running"
+    }
+  }
+}
+
+export default function GameText({ game, setGame }: GameTextProps) {
+  const gameState: GameState = game.state;
   const gameText: string = getGameText(gameState);
+  const gameDescription: string = getGameDescription(gameState);
+
+  const handlePause = () => {
+    setGame({ ...game, state: GameState.Running, })
+  }
   return (
     <Dialog defaultOpen={true}>
       {/* <DialogTrigger></DialogTrigger> */}
@@ -42,8 +70,13 @@ export default function GameText({ gameState }: GameTextProps) {
         <DialogHeader>
           <DialogTitle>{gameText}</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your account
-            and remove your data from our servers.
+            {gameDescription}
+            <br />
+            {gameState === GameState.Paused &&
+              <Button onClick={handlePause}>
+                unpause
+              </Button>
+            }
           </DialogDescription>
         </DialogHeader>
       </DialogContent>

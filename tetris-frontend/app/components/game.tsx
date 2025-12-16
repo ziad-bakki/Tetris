@@ -79,7 +79,7 @@ export default function Game() {
 
   const gameText: ReactElement = (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl">
-      <GameText gameState={gameObject.state} />
+      <GameText game={gameObject} setGame={setGameObject} />
     </div>
   );
 
