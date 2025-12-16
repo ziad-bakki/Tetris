@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect, ReactElement } from "react";
-import { generateRandomPiece, generateNextPieces, makeGrid, moveDown, drawPiece, canSpawn } from "../context/gamecontext";
+import { generateNextPieces, makeGrid, moveDown, drawPiece, canSpawn } from "../context/gamecontext";
 import Grid from "./grid";
 import { Controls } from "./controls";
 import { Color, GameObject, GameState, Piece, Position } from "../interfaces/interfaces";
@@ -43,8 +43,8 @@ export default function Game() {
       const clearedLines = result.linesCleared + currentGame.clearedLines;
       if (result.placed) {
         const nextPiece = currentGame.nextPieces[0];
-        const remainingPieces = currentGame.nextPieces.slice(1);
-        const newNextPieces = [...remainingPieces, generateRandomPiece()];
+        const tempGame: GameObject = { ...currentGame, nextPieces: currentGame.nextPieces.slice(1) };
+        const newNextPieces = generateNextPieces(tempGame, 4);
         let state = undefined;
         if (!canSpawn(result.grid, nextPiece, SPAWN_POSITION)) {
           state = GameState.Over;

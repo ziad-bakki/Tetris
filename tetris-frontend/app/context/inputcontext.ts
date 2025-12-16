@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { GameObject, GameState, GridCell, Position } from "../interfaces/interfaces";
-import { canSpawn, drawPiece, generateNextPieces, generateRandomPiece, hardDrop, holdPiece, makeGrid, moveDown, moveLeft, moveRight, rotateRight } from "./gamecontext";
+import { canSpawn, drawPiece, generateNextPieces, hardDrop, holdPiece, makeGrid, moveDown, moveLeft, moveRight, rotateRight } from "./gamecontext";
 import { SPAWN_POSITION } from "../consts/consts";
 
 interface KeyboardProps {
@@ -25,10 +25,28 @@ export function useKeyboardControls({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Allow "j" to work anytime to return to menu
-      if (event.key === "Escape") {
+      if (event.key === "j") {
         event.preventDefault();
         const newGrid = makeGrid();
-        const nextPieces = generateNextPieces(4);
+        const nextPieces = generateNextPieces(undefined, 4);
+        setGame({
+          state: GameState.Running,
+          grid: newGrid,
+          nextPieces: nextPieces,
+          currentPiece: undefined,
+          heldPiece: undefined,
+          clearedLines: 0,
+        });
+        setPosition(SPAWN_POSITION);
+        resetTimer();
+        return;
+      }
+
+      if (event.key === "Escape") {
+        if (game.state == GameState.Menu) return;
+        event.preventDefault();
+        const newGrid = makeGrid();
+        const nextPieces = generateNextPieces(undefined, 4);
         setGame({
           state: GameState.Menu,
           grid: newGrid,
@@ -65,8 +83,8 @@ export function useKeyboardControls({
           const clearedLines = result.linesCleared + game.clearedLines;
           if (result.placed) {
             const nextPiece = game.nextPieces[0];
-            const remainingPieces = game.nextPieces.slice(1);
-            const newNextPieces = [...remainingPieces, generateRandomPiece()];
+            const tempGame: GameObject = { ...game, nextPieces: game.nextPieces.slice(1) };
+            const newNextPieces = generateNextPieces(tempGame, 4);
             let state = undefined;
             if (!canSpawn(result.grid, nextPiece, SPAWN_POSITION)) {
               state = GameState.Over;
@@ -107,8 +125,8 @@ export function useKeyboardControls({
           const result = hardDrop(grid, game.currentPiece, position);
           const clearedLines = result.linesCleared + game.clearedLines;
           const nextPiece = game.nextPieces[0];
-          const remainingPieces = game.nextPieces.slice(1);
-          const newNextPieces = [...remainingPieces, generateRandomPiece()];
+          const tempGame: GameObject = { ...game, nextPieces: game.nextPieces.slice(1) };
+          const newNextPieces = generateNextPieces(tempGame, 4);
           let state = undefined;
           if (!canSpawn(result.grid, nextPiece, SPAWN_POSITION)) {
             state = GameState.Over;

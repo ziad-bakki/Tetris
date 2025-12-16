@@ -16,20 +16,30 @@ export function makeGrid(): GridCell[][] {
   return grid;
 }
 
-export function generateRandomPiece(): Piece {
+
+export function generateNextPieces(game: GameObject | undefined, count: number): Piece[] {
   const pieceTypes: PieceType[] = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'];
-  const randomPiece = pieceTypes[Math.floor(Math.random() * pieceTypes.length)];
-  const piece: Piece = {
-    type: randomPiece,
-    rotation: 0,
-    color: Color[randomPiece]
+  const newPieces: Piece[] = game ? game.nextPieces : [];
+  const shuffle = (arr: PieceType[]) => {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
   };
 
-  return piece;
-}
+  while (newPieces.length < count + 1) {
+    const shuffled = shuffle([...pieceTypes])
+    const newPiece: Piece = {
+      type: shuffled[0],
+      rotation: 0,
+      color: Color[shuffled[0]],
 
-export function generateNextPieces(count: number): Piece[] {
-  return Array.from({ length: count }, () => generateRandomPiece());
+    }
+    newPieces.push(newPiece);
+  }
+  return newPieces;
+
 }
 
 function clearPiece(grid: GridCell[][], piece: Piece, position: Position) {
@@ -263,15 +273,15 @@ export function holdPiece(game: GameObject, position: Position): GameObject {
 
   if (!game.heldPiece) {
     // First hold: move next piece to current
-    const nextPiece = game.nextPieces[0];
-    const remainingPieces = game.nextPieces.slice(1);
-    const newNextPieces = [...remainingPieces, generateRandomPiece()];
+    const currentPiece = game.nextPieces[0];
+    const tempGame: GameObject = { ...game, nextPieces: game.nextPieces.slice(1) };
+    const newNextPieces = generateNextPieces(tempGame, 4);
 
     return {
       ...game,
       grid: newGrid,
       heldPiece: pieceToHold,
-      currentPiece: nextPiece,
+      currentPiece: currentPiece,
       nextPieces: newNextPieces,
     };
   } else {
