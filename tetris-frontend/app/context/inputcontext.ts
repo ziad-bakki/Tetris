@@ -38,7 +38,7 @@ export function useKeyboardControls({
         if (game.state == GameState.Menu) return;
         event.preventDefault();
         const newGrid = makeGrid();
-        const nextPieces = generateNextPieces(undefined, 4);
+        const { nextPieces, pieceBag } = generateNextPieces(undefined, 4);
         setGame({
           state: GameState.Menu,
           grid: newGrid,
@@ -46,6 +46,7 @@ export function useKeyboardControls({
           currentPiece: undefined,
           heldPiece: undefined,
           clearedLines: 0,
+          pieceBag: pieceBag,
         });
         setPosition(SPAWN_POSITION);
         resetTimer();
@@ -76,7 +77,7 @@ export function useKeyboardControls({
           if (result.placed) {
             const nextPiece = game.nextPieces[0];
             const tempGame: GameObject = { ...game, nextPieces: game.nextPieces.slice(1) };
-            const newNextPieces = generateNextPieces(tempGame, 4);
+            const { nextPieces: newNextPieces, pieceBag: newPieceBag } = generateNextPieces(tempGame, 4);
             let state = undefined;
             if (!canSpawn(result.grid, nextPiece, SPAWN_POSITION)) {
               state = GameState.Over;
@@ -85,7 +86,7 @@ export function useKeyboardControls({
               state = game.state;
             }
             const newGrid = drawPiece(result.grid, nextPiece, SPAWN_POSITION);
-            setGame({ ...game, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines });
+            setGame({ ...game, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines, pieceBag: newPieceBag });
             setPosition(SPAWN_POSITION);
           } else {
             setGame({ ...game, grid: result.grid, clearedLines });
@@ -118,7 +119,7 @@ export function useKeyboardControls({
           const clearedLines = result.linesCleared + game.clearedLines;
           const nextPiece = game.nextPieces[0];
           const tempGame: GameObject = { ...game, nextPieces: game.nextPieces.slice(1) };
-          const newNextPieces = generateNextPieces(tempGame, 4);
+          const { nextPieces: newNextPieces, pieceBag: newPieceBag } = generateNextPieces(tempGame, 4);
           let state = undefined;
           if (!canSpawn(result.grid, nextPiece, SPAWN_POSITION)) {
             state = GameState.Over;
@@ -127,7 +128,7 @@ export function useKeyboardControls({
             state = game.state;
           }
           const newGrid = drawPiece(result.grid, nextPiece, SPAWN_POSITION);
-          setGame({ ...game, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines });
+          setGame({ ...game, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines, pieceBag: newPieceBag });
           setPosition(SPAWN_POSITION);
           break;
         }

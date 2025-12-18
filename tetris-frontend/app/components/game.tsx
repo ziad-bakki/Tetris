@@ -45,7 +45,7 @@ export default function Game() {
       if (result.placed) {
         const nextPiece = currentGame.nextPieces[0];
         const tempGame: GameObject = { ...currentGame, nextPieces: currentGame.nextPieces.slice(1) };
-        const newNextPieces = generateNextPieces(tempGame, 4);
+        const { nextPieces: newNextPieces, pieceBag: newPieceBag } = generateNextPieces(tempGame, 4);
         let state = undefined;
         if (!canSpawn(result.grid, nextPiece, SPAWN_POSITION)) {
           state = GameState.Over;
@@ -55,7 +55,7 @@ export default function Game() {
         }
         const newGrid = drawPiece(result.grid, nextPiece, SPAWN_POSITION);
         setPosition(SPAWN_POSITION);
-        return { ...currentGame, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines };
+        return { ...currentGame, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines, pieceBag: newPieceBag };
       } else {
         setPosition(result.position);
         return { ...currentGame, grid: result.grid, clearedLines };

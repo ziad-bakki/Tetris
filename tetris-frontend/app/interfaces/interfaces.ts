@@ -40,6 +40,7 @@ export interface GameObject {
   currentPiece?: Piece,
   nextPieces: Piece[],
   heldPiece?: Piece,
+  pieceBag: PieceType[], // Remaining pieces from current shuffled bag
 }
 
 export type Position = { row: number, col: number }; 

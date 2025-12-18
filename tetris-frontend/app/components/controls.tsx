@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { GameObject, GameState, GridCell } from "../interfaces/interfaces";
-import { drawPiece, generateNextPieces, Start, } from "../context/gamecontext";
-import { Pause } from "lucide-react"; import { Position } from "../interfaces/interfaces";
+import { GameObject, GameState, GridCell, Position } from "../interfaces/interfaces";
+import { Start } from "../context/gamecontext";
+import { Pause } from "lucide-react";
 import { SPAWN_POSITION } from "../consts/consts";
 
 interface ControlsProps {
