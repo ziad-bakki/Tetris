@@ -40,8 +40,8 @@ export function PiecePreview({ piece }: PiecePreviewProps) {
       // Draw piece in the grid
       const shape = PIECE_SHAPES[piece.type][piece.rotation];
       for (const offset of shape) {
-        const row = 1 + offset.row;
-        const col = 1 + offset.col;
+        const row = 0 + offset.row;
+        const col = 0 + offset.col;
         if (row >= 0 && row < ROWS && col >= 0 && col < COLS) {
           grid[row][col] = { occupied: true, currentPiece: true, color: piece.color };
         }
