@@ -30,6 +30,7 @@ func main() {
 	r.GET("/health", handlers.HealthCheck)
 	r.GET("/users", handlers.GetAllUsers)
 	r.GET("/users/:uuid", handlers.GetUserByUUID)
+	r.PUT("/users/:uuid", handlers.UpdateUser)
 
 	log.Printf("Server starting on port %s...", port)
 	if err := r.Run(":" + port); err != nil {
