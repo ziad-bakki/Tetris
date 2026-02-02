@@ -151,5 +151,46 @@ func UpdateUser(c *gin.Context) {
 }
 
 func DeleteUser(c *gin.Context) {
-	return
+
+	uuidParam := c.Param("uuid")
+
+	userUUID, err := uuid.Parse(uuidParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid UUID format",
+		})
+		return
+	}
+
+	client := getClient()
+	data, _, err := client.From("users").Delete("", "").Eq("id", userUUID.String()).Execute()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "Failed to delete user",
+			"details": err.Error(),
+		})
+		return
+	}
+
+	var result []models.User
+	if err := json.Unmarshal(data, &result); err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "User profile deleted successfully",
+		})
+		return
+	}
+
+	if len(result) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "User not found",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":      "User profile deleted successfully",
+		"deleted_user": result[0],
+	})
+
 }
