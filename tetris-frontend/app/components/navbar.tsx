@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
+import AuthButton from "./login";
 
 
 function TetrisIcon() {
@@ -54,10 +55,7 @@ export default function NavBar() {
               <Separator orientation="vertical" className="h-6 mx-2" />
 
               <NavigationMenuItem>
-                <Button size="sm">
-                  <LogIn className="h-4 w-4" />
-                  Login
-                </Button>
+                <AuthButton />
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
