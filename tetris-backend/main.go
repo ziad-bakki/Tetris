@@ -30,6 +30,9 @@ func main() {
 	r.GET("/health", handlers.HealthCheck)
 	r.GET("/users", handlers.GetAllUsers)
 	r.GET("/users/:uuid", handlers.GetUserByUUID)
+	r.GET("/favicon.ico", func(c *gin.Context) {
+		c.Status(204)
+	})
 	r.PUT("/users/:uuid", handlers.UpdateUser)
 	r.DELETE("/users/:uuid", handlers.DeleteUser)
 
