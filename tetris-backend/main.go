@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/ziad-bakki/tetris-backend/config"
 	"github.com/ziad-bakki/tetris-backend/handlers"
+	"github.com/ziad-bakki/tetris-backend/internal/middleware"
 )
 
 func main() {
@@ -27,14 +28,23 @@ func main() {
 
 	r := gin.Default()
 
+	r.Use(middleware.CORSMiddleware())
+
+	// Public routes
 	r.GET("/health", handlers.HealthCheck)
 	r.GET("/users", handlers.GetAllUsers)
 	r.GET("/users/:uuid", handlers.GetUserByUUID)
 	r.GET("/favicon.ico", func(c *gin.Context) {
 		c.Status(204)
 	})
-	r.PUT("/users/:uuid", handlers.UpdateUser)
-	r.DELETE("/users/:uuid", handlers.DeleteUser)
+
+	// Protected routes
+	protected := r.Group("/")
+	protected.Use(middleware.AuthRequired())
+	{
+		protected.PUT("/users/:uuid", handlers.UpdateUser)
+		protected.DELETE("/users/:uuid", handlers.DeleteUser)
+	}
 
 	log.Printf("Server starting on port %s...", port)
 	if err := r.Run(":" + port); err != nil {
