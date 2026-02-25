@@ -33,7 +33,7 @@ export default function AuthButton() {
   if (user) {
     return (
       <div>
-        <span>{user.email}</span>
+        <span>{user.user_metadata.display_name || user.email}</span>
         <button onClick={handleSignOut}>Sign out</button>
       </div>
     )
