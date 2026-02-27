@@ -12,10 +12,6 @@ export default function Home() {
       <div className="flex justify-center align-middle flex-col items-center">
         <Game />
       </div>
-      <div className="flex justify-center align-middle flex-col items-center">
-        <Button onClick={GetUserByID} >Log</Button>
-      </div>
-
     </>
   );
 }
