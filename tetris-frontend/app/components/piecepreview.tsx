@@ -53,9 +53,10 @@ export function PiecePreview({ piece }: PiecePreviewProps) {
           const x = col * cellWidth;
           const y = row * cellHeight;
 
+
           ctx.fillStyle = grid[row][col].color || '#000';
           ctx.fillRect(x, y, cellWidth, cellHeight);
-          ctx.strokeStyle = '#333';
+          ctx.strokeStyle = '#000';
           ctx.strokeRect(x, y, cellWidth, cellHeight);
         }
       }

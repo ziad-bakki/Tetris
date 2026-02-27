@@ -5,8 +5,8 @@ import { GameObject } from "../interfaces/interfaces";
 import { NextPieces } from "./nextpieces";
 
 interface StatsProps {
-    game: GameObject;
-    elapsedTime: number;
+  game: GameObject;
+  elapsedTime: number;
 }
 
 export default function Stats({ game, elapsedTime }: StatsProps) {
@@ -25,7 +25,7 @@ export default function Stats({ game, elapsedTime }: StatsProps) {
   }, [game.score, highScore]);
 
   return (
-    <div className="flex flex-col h-[45vw] w-[20vw] border-2">
+    <div className="flex flex-col h-[45vw] w-[20vw] border-2 pl-3.5">
       <div className="text-lg"> Time Elapsed: {(elapsedTime / 1000).toFixed(1)}s </div>
       <div className="text-lg"> Score: {game.score} </div>
       <div className="text-lg"> High Score: {highScore} </div>

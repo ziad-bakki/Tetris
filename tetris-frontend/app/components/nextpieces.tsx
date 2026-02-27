@@ -10,7 +10,7 @@ export function NextPieces({ game }: NextPiecesProps) {
   return (
     <div className="flex flex-col gap-2">
       {nextPieces.map((piece, index) => (
-        <div key={index} className="w-[6vw] h-[6vw] border">
+        <div key={index} className="w-[6vw] h-[6vw]">
           <PiecePreview piece={piece} />
         </div>
       ))}
