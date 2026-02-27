@@ -56,10 +56,16 @@ export const DEFAULT_GAME_OBJECT: GameObject = {
   state: GameState.Menu,
   grid: makeGrid(),
   clearedLines: 0,
+  score: 0,
   nextPieces: initialPieces.nextPieces,
   currentPiece: undefined,
   heldPiece: undefined,
   pieceBag: initialPieces.pieceBag,
+}
+
+export function calculateScore(linesCleared: number): number {
+  const scoreMap: Record<number, number> = { 0: 0, 1: 100, 2: 300, 3: 500, 4: 800 };
+  return scoreMap[linesCleared] ?? 0;
 }
 
 function clearPiece(grid: GridCell[][], piece: Piece, position: Position) {
@@ -338,7 +344,7 @@ export function Start(game: GameObject): GameObject {
   const { nextPieces: newNextPieces, pieceBag: newPieceBag } = generateNextPieces(tempGame, 4);
   const newPosition = SPAWN_POSITION;
   const newGrid = drawPiece(makeGrid(), nextPiece, newPosition);
-  return { ...game, state: GameState.Running, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, heldPiece: undefined, pieceBag: newPieceBag }
+  return { ...game, state: GameState.Running, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, heldPiece: undefined, pieceBag: newPieceBag, clearedLines: 0, score: 0 }
 }
 
 

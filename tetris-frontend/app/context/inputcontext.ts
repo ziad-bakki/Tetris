@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { GameObject, GameState, GridCell, Position } from "../interfaces/interfaces";
-import { canSpawn, drawPiece, generateNextPieces, hardDrop, holdPiece, makeGrid, moveDown, moveLeft, moveRight, rotateRight, Start } from "./gamecontext";
+import { calculateScore, canSpawn, drawPiece, generateNextPieces, hardDrop, holdPiece, makeGrid, moveDown, moveLeft, moveRight, rotateRight, Start } from "./gamecontext";
 import { SPAWN_POSITION } from "../consts/consts";
 
 interface KeyboardProps {
@@ -46,6 +46,7 @@ export function useKeyboardControls({
           currentPiece: undefined,
           heldPiece: undefined,
           clearedLines: 0,
+          score: 0,
           pieceBag: pieceBag,
         });
         setPosition(SPAWN_POSITION);
@@ -74,6 +75,7 @@ export function useKeyboardControls({
           event.preventDefault();
           const result = moveDown(grid, game.currentPiece, position);
           const clearedLines = result.linesCleared + game.clearedLines;
+          const score = calculateScore(result.linesCleared) + game.score;
           if (result.placed) {
             const nextPiece = game.nextPieces[0];
             const tempGame: GameObject = { ...game, nextPieces: game.nextPieces.slice(1) };
@@ -86,10 +88,10 @@ export function useKeyboardControls({
               state = game.state;
             }
             const newGrid = drawPiece(result.grid, nextPiece, SPAWN_POSITION);
-            setGame({ ...game, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines, pieceBag: newPieceBag });
+            setGame({ ...game, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines, score, pieceBag: newPieceBag });
             setPosition(SPAWN_POSITION);
           } else {
-            setGame({ ...game, grid: result.grid, clearedLines });
+            setGame({ ...game, grid: result.grid, clearedLines, score });
             setPosition(result.position);
           }
           break;
@@ -117,6 +119,7 @@ export function useKeyboardControls({
           event.preventDefault();
           const result = hardDrop(grid, game.currentPiece, position);
           const clearedLines = result.linesCleared + game.clearedLines;
+          const score = calculateScore(result.linesCleared) + game.score;
           const nextPiece = game.nextPieces[0];
           const tempGame: GameObject = { ...game, nextPieces: game.nextPieces.slice(1) };
           const { nextPieces: newNextPieces, pieceBag: newPieceBag } = generateNextPieces(tempGame, 4);
@@ -128,7 +131,7 @@ export function useKeyboardControls({
             state = game.state;
           }
           const newGrid = drawPiece(result.grid, nextPiece, SPAWN_POSITION);
-          setGame({ ...game, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines, pieceBag: newPieceBag });
+          setGame({ ...game, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines, score, pieceBag: newPieceBag });
           setPosition(SPAWN_POSITION);
           break;
         }

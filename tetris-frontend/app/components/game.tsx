@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect, ReactElement } from "react";
-import { generateNextPieces, makeGrid, moveDown, drawPiece, canSpawn, DEFAULT_GAME_OBJECT } from "../context/gamecontext";
+import { generateNextPieces, makeGrid, moveDown, drawPiece, canSpawn, DEFAULT_GAME_OBJECT, calculateScore } from "../context/gamecontext";
 import Grid from "./grid";
 import { Controls } from "./controls";
 import { Color, GameObject, GameState, Piece, Position } from "../interfaces/interfaces";
@@ -42,6 +42,7 @@ export default function Game() {
 
       const result = moveDown(currentGame.grid, currentGame.currentPiece, currentPosition);
       const clearedLines = result.linesCleared + currentGame.clearedLines;
+      const score = calculateScore(result.linesCleared) + currentGame.score;
       if (result.placed) {
         const nextPiece = currentGame.nextPieces[0];
         const tempGame: GameObject = { ...currentGame, nextPieces: currentGame.nextPieces.slice(1) };
@@ -55,10 +56,10 @@ export default function Game() {
         }
         const newGrid = drawPiece(result.grid, nextPiece, SPAWN_POSITION);
         setPosition(SPAWN_POSITION);
-        return { ...currentGame, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines, pieceBag: newPieceBag };
+        return { ...currentGame, state: state, nextPieces: newNextPieces, currentPiece: nextPiece, grid: newGrid, clearedLines, score, pieceBag: newPieceBag };
       } else {
         setPosition(result.position);
-        return { ...currentGame, grid: result.grid, clearedLines };
+        return { ...currentGame, grid: result.grid, clearedLines, score };
       }
     });
   }, []);
