@@ -14,7 +14,7 @@ export default function AuthButton() {
 
   useEffect(() => {
     GetUserByID().then(setProfile)
-  })
+  }, [])
 
 
   useEffect(() => {
