@@ -1,23 +1,23 @@
 import { supabase } from "@/lib/supabase";
 import axios from "axios";
+import { Profile } from "../interfaces/backendtypes";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export async function GetUsers() {
+export async function GetUsers(): Promise<Profile[]> {
   const endpoint = `${BACKEND_URL}/users`;
-  console.log(endpoint)
-  const response = await axios.get(endpoint);
+  const response = await axios.get<Profile[]>(endpoint);
   return response.data;
 }
 
-export async function GetUserByID() {
+export async function GetUserByID(): Promise<Profile> {
   const { data } = await supabase.auth.getSession();
   const id = data.session?.user.id;
-  const token = data.session?.access_token;
   const endpoint = `${BACKEND_URL}/users/${id}`;
 
   const response = await axios.get(endpoint);
 
-  console.log(response.data);
+  return response.data
+
 
 }

@@ -3,9 +3,19 @@
 import { supabase } from "@/lib/supabase"
 import { User } from "@supabase/supabase-js"
 import { useEffect, useState } from "react"
+import { GetUserByID } from "../context/api"
+import { Profile } from "../interfaces/backendtypes"
+import { Button } from "@/components/ui/button"
+import * as lucideReact from "lucide-react"
 
 export default function AuthButton() {
   const [user, setUser] = useState<User | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    GetUserByID().then(setProfile)
+  })
+
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -33,8 +43,9 @@ export default function AuthButton() {
   if (user) {
     return (
       <div>
-        <span>{user.user_metadata.display_name || user.email}</span>
-        <button onClick={handleSignOut}>Sign out</button>
+        <Button>
+          <lucideReact.User className=" h-4 w-4" />
+          {profile?.username || user?.email}</Button>
       </div>
     )
   }

@@ -36,19 +36,12 @@ export default function NavBar() {
 
           {/* Navigation */}
           <NavigationMenu>
-            <NavigationMenuList className="gap-1">
+            <NavigationMenuList className="gap-0.5">
               <NavigationMenuItem>
                 <Button size="sm">
 
                   <Trophy className="mr-2 h-4 w-4 text-amber-500" />
                   Leaderboards
-                </Button>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <Button size="sm">
-                  <User className="mr-2 h-4 w-4" />
-                  Account
                 </Button>
               </NavigationMenuItem>
 
