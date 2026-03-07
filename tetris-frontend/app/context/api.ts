@@ -1,7 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import axios from "axios";
 import { Profile } from "../interfaces/backendtypes";
-import { headers } from "next/headers";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -11,9 +10,10 @@ export async function GetUsers(): Promise<Profile[]> {
   return response.data;
 }
 
-export async function GetUserByID(): Promise<Profile> {
+export async function GetUserByID(): Promise<Profile | null> {
   const { data } = await supabase.auth.getSession();
   const id = data.session?.user.id;
+  if (!id) return null;
   const endpoint = `${BACKEND_URL}/users/${id}`;
 
   const response = await axios.get(endpoint);
@@ -26,13 +26,13 @@ export async function DeleteUser() {
   const { data } = await supabase.auth.getSession();
   const accessToken = data.session?.access_token;
   const id = data.session?.user.id;
+  if (!id) return { message: "No active session" };
   const endpoint = `${BACKEND_URL}/users/${id}`;
 
-  // const response = await axios.delete(endpoint,);
   const response = await fetch(
     endpoint,
     {
-      method: "GET",
+      method: "DELETE",
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -40,6 +40,7 @@ export async function DeleteUser() {
   )
 
   if (response.ok) {
+    await supabase.auth.signOut();
     return response.json();
   }
 

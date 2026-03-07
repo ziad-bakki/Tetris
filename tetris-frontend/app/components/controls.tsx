@@ -3,6 +3,7 @@ import { GameObject, GameState, GridCell, Position } from "../interfaces/interfa
 import { Start } from "../context/gamecontext";
 import { Pause } from "lucide-react";
 import { SPAWN_POSITION } from "../consts/consts";
+import { DeleteUser } from "../context/api";
 
 interface ControlsProps {
   grid: GridCell[][];
@@ -44,6 +45,8 @@ export function Controls({ grid, setPosition, resetTimer, game, setGame }: Contr
           <Pause />
         </Button>
       }
+
+      {/* <Button variant="destructive" onClick={DeleteUser}>Delete Account</Button> */}
     </div>
   );
 }
