@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { DeleteUser, GetUserByID, GetUserStatsByID } from "../context/api";
 import { Profile, UserStats } from "../interfaces/backendtypes";
 import { Button } from "@/components/ui/button";
+import { ProfileCard } from "../components/profilecard";
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null)
@@ -32,11 +33,20 @@ export default function ProfilePage() {
   }, [])
 
 
+
   return (
     <div>
-      <Button>
-        <lucideReact.User className=" h-4 w-4" />
-        {profile?.username || user?.email}</Button>
+      {
+        user && stats &&
+        < ProfileCard
+          username={profile?.username || user?.email as string}
+          highScore={stats?.high_score}
+          linesCleared={stats?.lines_cleared}
+          gamesPlayed={stats?.games_played}
+        />
+
+      }
+
       <Button variant="destructive" onClick={DeleteUser}>Delete Account</Button>
       <pre>{JSON.stringify(stats, null, 2)}</pre>
     </div>

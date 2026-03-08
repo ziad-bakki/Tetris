@@ -7,16 +7,16 @@ export interface Profile {
   id: string;
   username: string;
   email: string;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface UserStats {
   id: string;
-  highScore: number;
-  gamesPlayed: number;
-  linesCleared: number;
-  bestLines?: number;
-  createdAt: string;
+  high_score: number;
+  games_played: number;
+  lines_cleared: number;
+  best_lines?: number;
+  created_at: string;
 }
 
 
