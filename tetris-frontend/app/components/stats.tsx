@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { GameObject } from "../interfaces/interfaces";
 import { NextPieces } from "./nextpieces";
+import { GetUserStatsByID } from "../context/api";
+import { UserStats } from "../interfaces/backendtypes";
 
 interface StatsProps {
   game: GameObject;
@@ -11,16 +13,18 @@ interface StatsProps {
 
 export default function Stats({ game, elapsedTime }: StatsProps) {
   const [highScore, setHighScore] = useState(0);
+  const [stats, setStats] = useState<UserStats | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("tetris-high-score");
-    if (stored) setHighScore(Number(stored));
+    GetUserStatsByID().then((s) => {
+      setStats(s);
+      if (s?.high_score) setHighScore(s.high_score);
+    });
   }, []);
 
   useEffect(() => {
     if (game.score > highScore) {
       setHighScore(game.score);
-      localStorage.setItem("tetris-high-score", String(game.score));
     }
   }, [game.score, highScore]);
 

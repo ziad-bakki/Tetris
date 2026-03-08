@@ -10,7 +10,7 @@ import { useTimer } from "../context/timecontext";
 import Stats from "./stats";
 import { PiecePreview } from "./piecepreview";
 import GameText from "./gametext";
-import { UpdateUserStats } from "../context/api";
+import { GetUserStatsByID, UpdateUserStats } from "../context/api";
 export default function Game() {
   const [gameObject, setGameObject] = useState<GameObject>(DEFAULT_GAME_OBJECT);
   const [position, setPosition] = useState<Position>(SPAWN_POSITION);
@@ -25,11 +25,18 @@ export default function Game() {
 
   useEffect(() => {
     if (gameObject.state === GameState.Over) {
-      UpdateUserStats({
-        high_score: gameObject.score,
-        lines_cleared: gameObject.clearedLines,
-        games_played: 1,
-        best_lines: gameObject.clearedLines,
+      GetUserStatsByID().then((existing) => {
+        const update: Record<string, number> = {
+          games_played: (existing?.games_played ?? 0) + 1,
+          lines_cleared: (existing?.lines_cleared ?? 0) + gameObject.clearedLines,
+        };
+        if (gameObject.score > (existing?.high_score ?? 0)) {
+          update.high_score = gameObject.score;
+        }
+        if (gameObject.clearedLines > (existing?.best_lines ?? 0)) {
+          update.best_lines = gameObject.clearedLines;
+        }
+        UpdateUserStats(update);
       });
     }
   }, [gameObject.state]);
