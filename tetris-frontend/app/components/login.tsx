@@ -7,10 +7,14 @@ import { GetUserByID } from "../context/api"
 import { Profile } from "../interfaces/backendtypes"
 import { Button } from "@/components/ui/button"
 import * as lucideReact from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export default function AuthButton() {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null);
+
+  const router = useRouter();
+
 
   useEffect(() => {
     GetUserByID().then(setProfile)
@@ -43,9 +47,10 @@ export default function AuthButton() {
   if (user) {
     return (
       <div>
-        <Button>
+        <Button onClick={() => router.push("/profile")}>
           <lucideReact.User className=" h-4 w-4" />
-          {profile?.username || user?.email}</Button>
+          {profile?.username || user?.email}
+        </Button>
       </div>
     )
   }

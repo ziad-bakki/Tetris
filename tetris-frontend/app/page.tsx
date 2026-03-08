@@ -8,7 +8,6 @@ import { GetUserByID, GetUsers } from "./context/api";
 export default function Home() {
   return (
     <>
-      <NavBar />
       <div className="flex justify-center align-middle flex-col items-center">
         <Game />
       </div>

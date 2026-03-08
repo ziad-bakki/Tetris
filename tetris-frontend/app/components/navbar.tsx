@@ -1,3 +1,5 @@
+'use client'
+
 import { Trophy, User, LogIn, Sparkles, Icon } from "lucide-react";
 import {
   NavigationMenu,
@@ -9,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import AuthButton from "./login";
+import { useRouter } from "next/navigation";
 
 
 function TetrisIcon() {
@@ -19,16 +22,18 @@ function TetrisIcon() {
 }
 
 export default function NavBar() {
+
+  const router = useRouter();
+
   return (
     <div className="bg-background">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
         <div className="container flex h-14 max-w-screen-2xl items-center px-4 mx-auto">
           {/* Logo - flex-1 pushes nav to the right */}
-          <div className="flex-1">
-            <a href="#" className="flex items-center space-x-2 w-fit">
+          <div className="flex-1" onClick={() => router.push("/")}>
+            <a className="flex items-center space-x-2 w-fit">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                 <TetrisIcon />
-                {/* <Sparkles className="h-4 w-4 text-primary-foreground" /> */}
               </div>
               <span className="font-bold text-xl">Tetris</span>
             </a>
@@ -38,7 +43,7 @@ export default function NavBar() {
           <NavigationMenu>
             <NavigationMenuList className="gap-0.5">
               <NavigationMenuItem>
-                <Button size="sm">
+                <Button size="sm" onClick={() => router.push("/leaderboards")}>
 
                   <Trophy className="mr-2 h-4 w-4 text-amber-500" />
                   Leaderboards
