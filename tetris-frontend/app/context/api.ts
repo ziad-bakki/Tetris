@@ -29,22 +29,14 @@ export async function DeleteUser() {
   if (!id) return { message: "No active session" };
   const endpoint = `${BACKEND_URL}/users/${id}`;
 
-  const response = await fetch(
-    endpoint,
-    {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+  const response = await axios.delete(endpoint, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
     }
-  )
+  });
 
-  if (response.ok) {
-    await supabase.auth.signOut();
-    return response.json();
-  }
+  return response.data;
 
-  return { message: "Failed to delete user" };
 }
 
 export async function GetUserStatsByID(): Promise<UserStats | null> {
@@ -63,4 +55,21 @@ export async function GetUserStatsByID(): Promise<UserStats | null> {
 
 
 
+}
+
+export async function UpdateUserStats(stats: Partial<UserStats>) {
+  const { data } = await supabase.auth.getSession();
+  const accessToken = data.session?.access_token;
+  const id = data.session?.user.id;
+  if (!id) return null;
+
+  const endpoint = `${BACKEND_URL}/users/${id}/stats`;
+
+  const response = await axios.put(endpoint, stats, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  });
+
+  return response.data;
 }

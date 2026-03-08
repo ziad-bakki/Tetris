@@ -10,6 +10,7 @@ import { useTimer } from "../context/timecontext";
 import Stats from "./stats";
 import { PiecePreview } from "./piecepreview";
 import GameText from "./gametext";
+import { UpdateUserStats } from "../context/api";
 export default function Game() {
   const [gameObject, setGameObject] = useState<GameObject>(DEFAULT_GAME_OBJECT);
   const [position, setPosition] = useState<Position>(SPAWN_POSITION);
@@ -20,6 +21,17 @@ export default function Game() {
   // Reset tick counter when game state changes
   useEffect(() => {
     tickCounterRef.current = 0;
+  }, [gameObject.state]);
+
+  useEffect(() => {
+    if (gameObject.state === GameState.Over) {
+      UpdateUserStats({
+        high_score: gameObject.score,
+        lines_cleared: gameObject.clearedLines,
+        games_played: 1,
+        best_lines: gameObject.clearedLines,
+      });
+    }
   }, [gameObject.state]);
 
   useEffect(() => {

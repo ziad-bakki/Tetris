@@ -15,7 +15,7 @@ interface ProfileCardProps {
 
 export function ProfileCard({ username, highScore, gamesPlayed, linesCleared }: ProfileCardProps) {
   return (
-    <Card className="mx-auto w-full max-w-sm">
+    <Card className="mx-auto w-full max-w-2xl bg-zinc-900 text-white border-zinc-700">
       <CardHeader>
         <CardTitle className="text-2xl">{username}</CardTitle>
       </CardHeader>
