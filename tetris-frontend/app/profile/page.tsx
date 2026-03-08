@@ -48,7 +48,6 @@ export default function ProfilePage() {
       }
 
       <Button variant="destructive" onClick={DeleteUser}>Delete Account</Button>
-      <pre>{JSON.stringify(stats, null, 2)}</pre>
     </div>
   )
 }
