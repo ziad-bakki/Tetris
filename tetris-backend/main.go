@@ -34,6 +34,7 @@ func main() {
 	r.GET("/health", handlers.HealthCheck)
 	r.GET("/users", handlers.GetAllUsers)
 	r.GET("/users/:uuid", handlers.GetUserByUUID)
+	r.GET("/users/:uuid/stats", handlers.GetUserStats)
 	r.GET("/favicon.ico", func(c *gin.Context) {
 		c.Status(204)
 	})
@@ -44,6 +45,7 @@ func main() {
 	{
 		protected.PUT("/users/:uuid", handlers.UpdateUser)
 		protected.DELETE("/users/:uuid", handlers.DeleteUser)
+		protected.PUT("/users/:uuid/stats", handlers.UpdateUserStats)
 	}
 
 	log.Printf("Server starting on port %s...", port)

@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import axios from "axios";
-import { Profile } from "../interfaces/backendtypes";
+import { Profile, UserStats } from "../interfaces/backendtypes";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -47,3 +47,20 @@ export async function DeleteUser() {
   return { message: "Failed to delete user" };
 }
 
+export async function GetUserStatsByID(): Promise<UserStats | null> {
+
+  const { data } = await supabase.auth.getSession();
+  const id = data.session?.user.id;
+
+  if (!id) return null;
+
+  const endpoint = `${BACKEND_URL}/users/${id}/stats`
+
+  const response = await axios.get(endpoint);
+
+  return response.data;
+
+
+
+
+}
