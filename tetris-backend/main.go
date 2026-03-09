@@ -35,6 +35,8 @@ func main() {
 	r.GET("/users", handlers.GetAllUsers)
 	r.GET("/users/:uuid", handlers.GetUserByUUID)
 	r.GET("/users/:uuid/stats", handlers.GetUserStats)
+	r.GET("/leaderboard/high-score", handlers.GetLeaderboardByHighScore)
+	r.GET("/leaderboard/lines-cleared", handlers.GetLeaderboardByLinesCleared)
 	r.GET("/favicon.ico", func(c *gin.Context) {
 		c.Status(204)
 	})
