@@ -12,7 +12,6 @@ import (
 
 type LeaderboardEntry struct {
 	Username     string `json:"username"`
-	AvatarURL    string `json:"avatar_url"`
 	HighScore    int    `json:"high_score"`
 	GamesPlayed  int    `json:"games_played"`
 	LinesCleared int    `json:"lines_cleared"`

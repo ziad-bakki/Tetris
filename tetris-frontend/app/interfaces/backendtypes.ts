@@ -19,4 +19,14 @@ export interface UserStats {
   created_at: string;
 }
 
+export interface Leaderboard {
+  username: string;
+  high_score: number;
+  games_played: number;
+  lines_cleared: number;
+  best_lines: number;
+  score_rank: number;
+  lines_rank: number;
+}
+
 
