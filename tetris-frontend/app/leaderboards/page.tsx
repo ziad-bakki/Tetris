@@ -2,21 +2,21 @@
 
 import { useEffect, useState } from "react"
 import { Leaderboard } from "../interfaces/backendtypes"
-import { GetLeaderboardsByScore } from "../context/api";
+import { GetLeaderboardsByLines, GetLeaderboardsByScore } from "../context/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ChooseLeaderboard } from "../components/chooseLeaderboard";
+import LeaderBoardTable from "../components/leaderboardtable";
 
 
 export default function LeaderboardPage() {
+  const [sortBy, setSortBy] = useState<string>("high-score");
 
-  const [leaderboard, setLeaderboard] = useState<Leaderboard | null>(null);
-
-  useEffect(() => {
-    GetLeaderboardsByScore().then(setLeaderboard)
-  }, [])
 
 
   return (
     <>
+      <ChooseLeaderboard value={sortBy} onChange={setSortBy} />
+      <LeaderBoardTable sortBy={sortBy} />
 
     </>
   )
